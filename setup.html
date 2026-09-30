@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Recordable · Sync</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<style>
+  @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
+  :root{--bg:#E7F0F6;--card:#fff;--ink:#26313B;--muted:#7A8793;--line:#DCE6EE;--teal:#2F7D78;--chip:#F1F5F8;--bad:#C4553F;--good:#2C7050;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic','PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif;font-size:14px;line-height:1.5;}
+  button,input{font-family:inherit;font-size:inherit;color:inherit;}
+  .wrap{max-width:460px;margin:0 auto;padding:16px;}
+  .hd{display:flex;align-items:center;justify-content:space-between;margin:8px 0 16px;gap:8px;}
+  .title{font-size:18px;font-weight:700;}
+  .seg{display:inline-flex;background:#fff;border:1px solid var(--line);border-radius:999px;padding:2px;}
+  .seg button{border:none;background:transparent;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;}
+  .seg button.on{background:var(--teal);color:#fff;}
+  .card{background:var(--card);border-radius:22px;padding:18px;margin-bottom:14px;}
+  .row{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px dashed var(--line);font-size:13px;}
+  .row:last-child{border-bottom:none;}
+  .row .k{color:var(--muted);flex-shrink:0;}
+  .row .v{font-weight:600;text-align:right;overflow-wrap:anywhere;}
+  .ok{color:var(--good);} .bad{color:var(--bad);}
+  label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin:10px 0 4px;}
+  input{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 11px;background:#fff;}
+  .btns{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
+  .btn{border:none;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer;}
+  .pri{background:var(--teal);color:#fff;} .sec{background:var(--chip);}
+  .note{font-size:12px;color:var(--muted);margin-top:10px;}
+  .msg{margin-top:10px;font-size:13px;font-weight:600;min-height:20px;}
+  a.back{display:inline-block;margin-top:4px;color:var(--teal);font-weight:700;text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hd"><div class="title" id="t-title"></div>
+    <div class="seg"><button data-l="ko">한</button><button data-l="zh">中</button></div></div>
+
+  <section class="card" id="status"></section>
+
+  <section class="card" id="login-card">
+    <label for="email" id="t-email"></label><input id="email" type="email" autocomplete="username">
+    <label for="pw" id="t-pw"></label><input id="pw" type="password" autocomplete="current-password">
+    <div class="btns"><button class="btn pri" id="b-login"></button></div>
+  </section>
+  <div class="msg" id="msg" style="margin:0 4px 12px"></div>
+
+  <section class="card" id="logged-card" hidden>
+    <div class="btns" style="margin-top:0"><button class="btn sec" id="b-logout"></button></div>
+    <div class="note" id="t-lonote"></div>
+  </section>
+
+  <a class="back" href="index.html" id="t-back"></a>
+</div>
+<script src="config.js"></script>
+<script src="sync.js"></script>
+<script>
+(function(){
+  var LANG_KEY = 'recordable-lang';
+  var T = {
+    ko:{title:'동기화 설정', server:'서버', account:'계정', ledger:'공용 가계부', pending:'보내지 못한 변경', last:'마지막 동기화', err:'최근 오류',
+      none:'없음', notCfg:'config.js 에 서버 주소가 없어요. 동기화 없이 이 기기에만 저장돼요.', notIn:'로그인 안 됨',
+      email:'이메일', pw:'비밀번호', login:'로그인', logout:'로그아웃', back:'← 가계부로 돌아가기',
+      busy:'확인하는 중…', okMsg:'연결됐어요. 가계부를 열면 자동으로 동기화돼요.', loginFail:'로그인 실패: ', noLedger:'로그인은 됐지만 이 계정에 연결된 공용 가계부가 없어요 (README 3단계).',
+      lonote:'로그아웃해도 이 기기의 기록은 지워지지 않아요.', count:function(n){return n+'건';},
+      errs:{offline:'인터넷 연결 없음', login:'로그인 필요', server:'서버 응답 없음', noLedger:'공용 가계부 없음'}},
+    zh:{title:'同步设置', server:'服务器', account:'账号', ledger:'共用账本', pending:'未上传的修改', last:'上次同步', err:'最近错误',
+      none:'无', notCfg:'config.js 里没有服务器地址，只保存在这台设备上。', notIn:'未登录',
+      email:'邮箱', pw:'密码', login:'登录', logout:'退出登录', back:'← 返回账本',
+      busy:'正在确认…', okMsg:'已连接。打开账本后会自动同步。', loginFail:'登录失败：', noLedger:'已登录，但这个账号还没有关联共用账本（README 第3步）。',
+      lonote:'退出登录不会删除这台设备上的记录。', count:function(n){return n+' 条';},
+      errs:{offline:'没有网络连接', login:'需要登录', server:'服务器无响应', noLedger:'没有共用账本'}}
+  };
+  var lang = 'ko';
+  try{ var l = localStorage.getItem(LANG_KEY); if(T[l]) lang = l; else if((navigator.language||'').toLowerCase().indexOf('zh')===0) lang='zh'; }catch(e){}
+  var S = window.LedgerSync, $ = function(id){ return document.getElementById(id); };
+
+  function fmtTime(s){ if(!s) return T[lang].none; var d=new Date(s); return d.toLocaleString(lang==='zh'?'zh-CN':'ko-KR'); }
+  function row(k,v,cls){ return '<div class="row"><span class="k">'+k+'</span><span class="v '+(cls||'')+'">'+v+'</span></div>'; }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+
+  function render(){
+    var L = T[lang], st = S.status();
+    document.documentElement.lang = lang;
+    document.querySelectorAll('.seg button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-l')===lang); });
+    $('t-title').textContent = L.title; $('t-email').textContent = L.email; $('t-pw').textContent = L.pw;
+    $('b-login').textContent = L.login; $('b-logout').textContent = L.logout; $('t-back').textContent = L.back; $('t-lonote').textContent = L.lonote;
+    if(!st.configured){
+      $('status').innerHTML = '<div class="bad" style="font-weight:600">'+esc(L.notCfg)+'</div>';
+      $('login-card').hidden = true; $('logged-card').hidden = true; return;
+    }
+    $('status').innerHTML =
+      row(L.server, esc(st.server)) +
+      row(L.account, st.session ? esc(st.session.email) : L.notIn, st.session ? 'ok' : 'bad') +
+      row(L.ledger, st.ledgerId ? esc(st.ledgerId.slice(0,8))+'…' : L.none) +
+      row(L.pending, L.count(st.pending), st.pending ? 'bad' : '') +
+      row(L.last, esc(fmtTime(st.lastSync)));
+    $('login-card').hidden = !!st.session; $('logged-card').hidden = !st.session;
+  }
+
+  document.querySelectorAll('.seg button').forEach(function(b){
+    b.addEventListener('click', function(){ lang = b.getAttribute('data-l'); try{ localStorage.setItem(LANG_KEY, lang); }catch(e){} render(); });
+  });
+
+  $('b-login').addEventListener('click', function(){
+    var L = T[lang], m = $('msg');
+    m.className = 'msg'; m.textContent = L.busy;
+    S.signIn($('email').value.trim(), $('pw').value).then(function(){ return S.check(); }).then(function(){
+      m.className = 'msg ok'; m.textContent = L.okMsg; $('pw').value = ''; render();
+    }).catch(function(e){
+      m.className = 'msg bad';
+      m.textContent = e && e.code === 'noLedger' ? L.noLedger : L.loginFail + ((e && L.errs[e.code]) || (e && e.message) || '');
+      render();
+    });
+  });
+  $('pw').addEventListener('keydown', function(e){ if(e.key==='Enter') $('b-login').click(); });
+  $('b-logout').addEventListener('click', function(){ S.signOut().then(render); });
+
+  render();
+})();
+</script>
+</body>
+</html>
