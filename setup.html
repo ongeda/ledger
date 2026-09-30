@@ -49,7 +49,10 @@
   <div class="msg" id="msg" style="margin:0 4px 12px"></div>
 
   <section class="card" id="logged-card" hidden>
-    <div class="btns" style="margin-top:0"><button class="btn sec" id="b-logout"></button></div>
+    <label for="nm" id="t-name" style="margin-top:0"></label>
+    <div style="display:flex;gap:8px"><input id="nm" maxlength="12"><button class="btn pri" id="b-name" style="flex-shrink:0"></button></div>
+    <div class="note" id="t-namenote"></div>
+    <div class="btns"><button class="btn sec" id="b-logout"></button></div>
     <div class="note" id="t-lonote"></div>
   </section>
 
@@ -65,13 +68,13 @@
       none:'없음', notCfg:'config.js 에 서버 주소가 없어요. 동기화 없이 이 기기에만 저장돼요.', notIn:'로그인 안 됨',
       email:'이메일', pw:'비밀번호', login:'로그인', logout:'로그아웃', back:'← 가계부로 돌아가기',
       busy:'확인하는 중…', okMsg:'연결됐어요. 가계부를 열면 자동으로 동기화돼요.', loginFail:'로그인 실패: ', noLedger:'로그인은 됐지만 이 계정에 연결된 공용 가계부가 없어요 (README 3단계).',
-      lonote:'로그아웃해도 이 기기의 기록은 지워지지 않아요.', count:function(n){return n+'건';},
+      lonote:'로그아웃해도 이 기기의 기록은 지워지지 않아요.', name:'내 표시 이름', nameBtn:'저장', namenote:'기록 옆에 이 이름이 표시돼요. 두 사람 모두에게 같은 이름으로 보여요.', nameSaved:'저장했어요. 가계부를 열면 반영돼요.', count:function(n){return n+'건';},
       errs:{offline:'인터넷 연결 없음', login:'로그인 필요', server:'서버 응답 없음', noLedger:'공용 가계부 없음'}},
     zh:{title:'同步设置', server:'服务器', account:'账号', ledger:'共用账本', pending:'未上传的修改', last:'上次同步', err:'最近错误',
       none:'无', notCfg:'config.js 里没有服务器地址，只保存在这台设备上。', notIn:'未登录',
       email:'邮箱', pw:'密码', login:'登录', logout:'退出登录', back:'← 返回账本',
       busy:'正在确认…', okMsg:'已连接。打开账本后会自动同步。', loginFail:'登录失败：', noLedger:'已登录，但这个账号还没有关联共用账本（README 第3步）。',
-      lonote:'退出登录不会删除这台设备上的记录。', count:function(n){return n+' 条';},
+      lonote:'退出登录不会删除这台设备上的记录。', name:'我的显示名称', nameBtn:'保存', namenote:'记录旁边会显示这个名字，两个人看到的都一样。', nameSaved:'已保存，打开账本后生效。', count:function(n){return n+' 条';},
       errs:{offline:'没有网络连接', login:'需要登录', server:'服务器无响应', noLedger:'没有共用账本'}}
   };
   var lang = 'ko';
@@ -87,6 +90,7 @@
     document.documentElement.lang = lang;
     document.querySelectorAll('.seg button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-l')===lang); });
     $('t-title').textContent = L.title; $('t-email').textContent = L.email; $('t-pw').textContent = L.pw;
+    $('t-name').textContent = L.name; $('b-name').textContent = L.nameBtn; $('t-namenote').textContent = L.namenote;
     $('b-login').textContent = L.login; $('b-logout').textContent = L.logout; $('t-back').textContent = L.back; $('t-lonote').textContent = L.lonote;
     if(!st.configured){
       $('status').innerHTML = '<div class="bad" style="font-weight:600">'+esc(L.notCfg)+'</div>';
@@ -99,6 +103,15 @@
       row(L.pending, L.count(st.pending), st.pending ? 'bad' : '') +
       row(L.last, esc(fmtTime(st.lastSync)));
     $('login-card').hidden = !!st.session; $('logged-card').hidden = !st.session;
+    if(st.session && document.activeElement !== $('nm')){
+      var cur = '';
+      try{
+        var pn = JSON.parse(localStorage.getItem('recordable-pending-name') || 'null');
+        var d = JSON.parse(localStorage.getItem('recordable-ledger-v1') || 'null');
+        cur = (pn && pn.email === st.session.email && pn.name) || (d && d.names && d.names[st.session.email]) || '';
+      }catch(e){}
+      $('nm').value = cur; $('nm').placeholder = String(st.session.email).split('@')[0];
+    }
   }
 
   document.querySelectorAll('.seg button').forEach(function(b){
@@ -118,6 +131,14 @@
   });
   $('pw').addEventListener('keydown', function(e){ if(e.key==='Enter') $('b-login').click(); });
   $('b-logout').addEventListener('click', function(){ S.signOut().then(render); });
+  $('b-name').addEventListener('click', function(){
+    var st = S.status(), v = $('nm').value.trim();
+    if(!st.session || !v) return;
+    // 가계부 화면이 이 값을 받아 공용 데이터에 저장·동기화함
+    try{ localStorage.setItem('recordable-pending-name', JSON.stringify({email: st.session.email, name: v})); }catch(e){}
+    var m = $('msg'); m.className = 'msg ok'; m.textContent = T[lang].nameSaved;
+  });
+  $('nm').addEventListener('keydown', function(e){ if(e.key==='Enter') $('b-name').click(); });
 
   render();
 })();

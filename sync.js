@@ -44,6 +44,18 @@
 
   /* ---------------- 앱 데이터 ↔ 행 변환 ---------------- */
   var LISTS = [['entries', 'entry'], ['recurring', 'rec'], ['income', 'inc'], ['incomeRec', 'increc']];
+  // 한 값짜리 공용 설정: 설정 id → 앱 데이터 필드
+  var SETTINGS = { currency: 'currency', budget: 'budget', lastBackup: 'lastBackup' };
+
+  // 버전 호환 보호: 이 버전이 "아는" 행만 삭제 판정 대상.
+  // 더 새로운 버전이 추가한 종류/설정은 이 버전 데이터에 없어도 지우지 않고 그대로 둔다.
+  function isManaged(k) {
+    var kk = splitKey(k);
+    if (kk.kind === 'cat') return true;
+    for (var i = 0; i < LISTS.length; i++) if (LISTS[i][1] === kk.kind) return true;
+    if (kk.kind === 'setting') return SETTINGS.hasOwnProperty(kk.id) || kk.id.indexOf('name:') === 0;
+    return false;
+  }
 
   function toRows(d) {
     var m = {};
@@ -56,20 +68,25 @@
     LISTS.forEach(function (p) {
       (d[p[0]] || []).forEach(function (e) { if (e && e.id != null) m[p[1] + ':' + e.id] = { kind: p[1], id: String(e.id), data: e }; });
     });
-    m['setting:currency'] = { kind: 'setting', id: 'currency', data: { value: d.currency } };
-    m['setting:budget'] = { kind: 'setting', id: 'budget', data: { value: d.budget > 0 ? d.budget : 0 } }; // 전체 월 예산
+    Object.keys(SETTINGS).forEach(function (id) {
+      var v = d[SETTINGS[id]];
+      if (v !== undefined && v !== null && v !== '' && v !== 0) m['setting:' + id] = { kind: 'setting', id: id, data: { value: v } }; // 0/빈 값 = 행 삭제(해제)
+    });
+    Object.keys(d.names || {}).forEach(function (em) { // 작성자 표시 이름 (계정 이메일 → 이름)
+      if (d.names[em]) m['setting:name:' + em] = { kind: 'setting', id: 'name:' + em, data: { value: d.names[em] } };
+    });
     return m;
   }
 
   function fromRows(base, prev) {
-    var d = { v: prev.v, lang: prev.lang, currency: prev.currency, budget: prev.budget || 0, cats: [], entries: [], recurring: [], income: [], incomeRec: [] };
+    var d = { v: prev.v, lang: prev.lang, currency: prev.currency, budget: 0, lastBackup: null, names: {}, cats: [], entries: [], recurring: [], income: [], incomeRec: [] };
     var listOf = { entry: 'entries', rec: 'recurring', inc: 'income', increc: 'incomeRec' };
     Object.keys(base).forEach(function (k) {
       var kk = splitKey(k), o = JSON.parse(base[k]);
       if (kk.kind === 'cat') d.cats.push(o);
       else if (listOf[kk.kind]) d[listOf[kk.kind]].push(o);
-      else if (kk.kind === 'setting' && kk.id === 'currency' && o && o.value) d.currency = o.value;
-      else if (kk.kind === 'setting' && kk.id === 'budget' && o) d.budget = o.value > 0 ? o.value : 0;
+      else if (kk.kind === 'setting' && SETTINGS.hasOwnProperty(kk.id) && o && o.value !== undefined && o.value !== null) d[SETTINGS[kk.id]] = o.value;
+      else if (kk.kind === 'setting' && kk.id.indexOf('name:') === 0 && o && o.value) d.names[kk.id.slice(5)] = o.value;
     });
     d.cats.sort(function (a, b) { return (a._ord || 0) - (b._ord || 0); });
     d.cats.forEach(function (c) { delete c._ord; });
@@ -211,7 +228,7 @@
         if (S.base[k] !== j) { S.base[k] = j; queue(k, rows[k].data, false); changed = true; }
       });
       Object.keys(S.base).forEach(function (k) {
-        if (!rows[k]) { delete S.base[k]; queue(k, null, true); changed = true; }
+        if (!rows[k] && isManaged(k)) { delete S.base[k]; queue(k, null, true); changed = true; }
       });
       return changed;
     }
@@ -370,7 +387,7 @@
     };
   }
 
-  var api = { createEngine: createEngine, toRows: toRows, fromRows: fromRows, stable: stable, adapters: ADAPTERS, KEYS: K };
+  var api = { createEngine: createEngine, toRows: toRows, fromRows: fromRows, isManaged: isManaged, stable: stable, adapters: ADAPTERS, KEYS: K };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof window !== 'undefined') {
     root.LedgerSyncLib = api;
