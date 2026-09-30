@@ -32,12 +32,27 @@
   .note{font-size:12px;color:var(--muted);margin-top:10px;}
   .msg{margin-top:10px;font-size:13px;font-weight:600;min-height:20px;}
   a.back{display:inline-block;margin-top:4px;color:var(--teal);font-weight:700;text-decoration:none;}
+  a.back.skip{display:block;margin-top:14px;color:var(--muted);font-weight:600;font-size:13px;}
+  a.btn{text-decoration:none;display:inline-block;}
+  .welcome{text-align:center;padding:26px 18px;}
+  .w-logo{width:52px;height:52px;border-radius:18px;background:var(--teal);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;}
+  .w-name{font-size:20px;font-weight:800;}
+  .w-sub{font-size:13px;color:var(--muted);margin-top:4px;}
+  body.login-mode #status, body.login-mode #t-back, body.login-mode #t-title, body.login-mode #logout-row, body.login-mode #t-lonote{display:none;}
+  body.login-mode .hd{justify-content:flex-end;}
+  body.login-mode #b-login{width:100%;padding:12px;} body.login-mode .btns{margin-top:16px;}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="hd"><div class="title" id="t-title"></div>
     <div class="seg"><button data-l="ko">한</button><button data-l="zh">中</button></div></div>
+
+  <section class="card welcome" id="welcome" hidden>
+    <div class="w-logo"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h12v4"/><path d="M3 7v11a2 2 0 0 0 2 2h14a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1H5a2 2 0 0 1-2-2z"/><circle cx="16" cy="14" r="1.2" fill="#fff"/></svg></div>
+    <div class="w-name">Recordable</div>
+    <div class="w-sub" id="t-wsub"></div>
+  </section>
 
   <section class="card" id="status"></section>
 
@@ -52,11 +67,13 @@
     <label for="nm" id="t-name" style="margin-top:0"></label>
     <div style="display:flex;gap:8px"><input id="nm" maxlength="12"><button class="btn pri" id="b-name" style="flex-shrink:0"></button></div>
     <div class="note" id="t-namenote"></div>
-    <div class="btns"><button class="btn sec" id="b-logout"></button></div>
+    <div class="btns" id="go-row" hidden><a class="btn sec" id="b-later" href="index.html"></a></div>
+    <div class="btns" id="logout-row"><button class="btn sec" id="b-logout"></button></div>
     <div class="note" id="t-lonote"></div>
   </section>
 
   <a class="back" href="index.html" id="t-back"></a>
+  <a class="back skip" href="index.html?offline=1" id="t-skip" hidden></a>
 </div>
 <script src="config.js"></script>
 <script src="sync.js"></script>
@@ -68,18 +85,33 @@
       none:'없음', notCfg:'config.js 에 서버 주소가 없어요. 동기화 없이 이 기기에만 저장돼요.', notIn:'로그인 안 됨',
       email:'이메일', pw:'비밀번호', login:'로그인', logout:'로그아웃', back:'← 가계부로 돌아가기',
       busy:'확인하는 중…', okMsg:'연결됐어요. 가계부를 열면 자동으로 동기화돼요.', loginFail:'로그인 실패: ', noLedger:'로그인은 됐지만 이 계정에 연결된 공용 가계부가 없어요 (README 3단계).',
-      lonote:'로그아웃해도 이 기기의 기록은 지워지지 않아요.', name:'내 표시 이름', nameBtn:'저장', namenote:'기록 옆에 이 이름이 표시돼요. 두 사람 모두에게 같은 이름으로 보여요.', nameSaved:'저장했어요. 가계부를 열면 반영돼요.', count:function(n){return n+'건';},
+      lonote:'로그아웃해도 이 기기의 기록은 지워지지 않아요.', wsub:'로그인하면 두 사람의 가계부가 연결돼요', skip:'로그인 없이 이 기기에 저장된 기록만 보기 (오프라인)', going:'로그인됐어요. 가계부로 이동해요…', nameAsk:'마지막으로, 기록 옆에 표시될 이름을 정해 주세요.', nameGo:'저장하고 가계부로', later:'나중에 하기', name:'내 표시 이름', nameBtn:'저장', namenote:'기록 옆에 이 이름이 표시돼요. 두 사람 모두에게 같은 이름으로 보여요.', nameSaved:'저장했어요. 가계부를 열면 반영돼요.', count:function(n){return n+'건';},
       errs:{offline:'인터넷 연결 없음', login:'로그인 필요', server:'서버 응답 없음', noLedger:'공용 가계부 없음'}},
     zh:{title:'同步设置', server:'服务器', account:'账号', ledger:'共用账本', pending:'未上传的修改', last:'上次同步', err:'最近错误',
       none:'无', notCfg:'config.js 里没有服务器地址，只保存在这台设备上。', notIn:'未登录',
       email:'邮箱', pw:'密码', login:'登录', logout:'退出登录', back:'← 返回账本',
       busy:'正在确认…', okMsg:'已连接。打开账本后会自动同步。', loginFail:'登录失败：', noLedger:'已登录，但这个账号还没有关联共用账本（README 第3步）。',
-      lonote:'退出登录不会删除这台设备上的记录。', name:'我的显示名称', nameBtn:'保存', namenote:'记录旁边会显示这个名字，两个人看到的都一样。', nameSaved:'已保存，打开账本后生效。', count:function(n){return n+' 条';},
+      lonote:'退出登录不会删除这台设备上的记录。', wsub:'登录后，两个人的账本就连在一起了', skip:'不登录，只看这台设备上的记录（离线）', going:'已登录，正在打开账本…', nameAsk:'最后一步：请设置显示在记录旁边的名字。', nameGo:'保存并打开账本', later:'以后再说', name:'我的显示名称', nameBtn:'保存', namenote:'记录旁边会显示这个名字，两个人看到的都一样。', nameSaved:'已保存，打开账本后生效。', count:function(n){return n+' 条';},
       errs:{offline:'没有网络连接', login:'需要登录', server:'服务器无响应', noLedger:'没有共用账本'}}
   };
   var lang = 'ko';
   try{ var l = localStorage.getItem(LANG_KEY); if(T[l]) lang = l; else if((navigator.language||'').toLowerCase().indexOf('zh')===0) lang='zh'; }catch(e){}
   var S = window.LedgerSync, $ = function(id){ return document.getElementById(id); };
+  var loginMode = /[?&]next=app/.test(location.search); // 가계부에서 로그인하러 온 경우
+  function goApp(delay){ setTimeout(function(){ location.replace('index.html'); }, delay || 0); }
+  function hasName(email){
+    try{
+      var pn = JSON.parse(localStorage.getItem('recordable-pending-name') || 'null');
+      var d = JSON.parse(localStorage.getItem('recordable-ledger-v1') || 'null');
+      return !!((pn && pn.email === email && pn.name) || (d && d.names && d.names[email]));
+    }catch(e){ return false; }
+  }
+  if(loginMode){
+    var st1 = S && S.status();
+    if(st1 && (!st1.configured || st1.session)) { location.replace('index.html'); return; } // 이미 로그인됨
+    document.body.classList.add('login-mode');
+    setTimeout(function(){ var e = document.getElementById('email'); if(e && !e.value) e.focus(); }, 0);
+  }
 
   function fmtTime(s){ if(!s) return T[lang].none; var d=new Date(s); return d.toLocaleString(lang==='zh'?'zh-CN':'ko-KR'); }
   function row(k,v,cls){ return '<div class="row"><span class="k">'+k+'</span><span class="v '+(cls||'')+'">'+v+'</span></div>'; }
@@ -88,9 +120,14 @@
   function render(){
     var L = T[lang], st = S.status();
     document.documentElement.lang = lang;
+    document.title = loginMode ? 'Recordable · Login' : 'Recordable · Sync';
     document.querySelectorAll('.seg button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-l')===lang); });
     $('t-title').textContent = L.title; $('t-email').textContent = L.email; $('t-pw').textContent = L.pw;
     $('t-name').textContent = L.name; $('b-name').textContent = L.nameBtn; $('t-namenote').textContent = L.namenote;
+    $('t-wsub').textContent = L.wsub; $('t-skip').textContent = L.skip; $('b-later').textContent = L.later;
+    $('welcome').hidden = !loginMode; $('t-skip').hidden = !loginMode || !!st.session;
+    $('go-row').hidden = !loginMode;
+    if(loginMode) $('b-name').textContent = L.nameGo;
     $('b-login').textContent = L.login; $('b-logout').textContent = L.logout; $('t-back').textContent = L.back; $('t-lonote').textContent = L.lonote;
     if(!st.configured){
       $('status').innerHTML = '<div class="bad" style="font-weight:600">'+esc(L.notCfg)+'</div>';
@@ -122,7 +159,11 @@
     var L = T[lang], m = $('msg');
     m.className = 'msg'; m.textContent = L.busy;
     S.signIn($('email').value.trim(), $('pw').value).then(function(){ return S.check(); }).then(function(){
-      m.className = 'msg ok'; m.textContent = L.okMsg; $('pw').value = ''; render();
+      $('pw').value = ''; render();
+      var email = S.status().session && S.status().session.email;
+      if(loginMode && hasName(email)){ m.className = 'msg ok'; m.textContent = L.going; goApp(600); return; }
+      m.className = 'msg ok'; m.textContent = loginMode ? L.nameAsk : L.okMsg;
+      if(loginMode) $('nm').focus();
     }).catch(function(e){
       m.className = 'msg bad';
       m.textContent = e && e.code === 'noLedger' ? L.noLedger : L.loginFail + ((e && L.errs[e.code]) || (e && e.message) || '');
@@ -136,7 +177,9 @@
     if(!st.session || !v) return;
     // 가계부 화면이 이 값을 받아 공용 데이터에 저장·동기화함
     try{ localStorage.setItem('recordable-pending-name', JSON.stringify({email: st.session.email, name: v})); }catch(e){}
-    var m = $('msg'); m.className = 'msg ok'; m.textContent = T[lang].nameSaved;
+    var m = $('msg'); m.className = 'msg ok';
+    if(loginMode){ m.textContent = T[lang].going; goApp(400); return; }
+    m.textContent = T[lang].nameSaved;
   });
   $('nm').addEventListener('keydown', function(e){ if(e.key==='Enter') $('b-name').click(); });
 
