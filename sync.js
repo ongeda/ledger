@@ -57,17 +57,19 @@
       (d[p[0]] || []).forEach(function (e) { if (e && e.id != null) m[p[1] + ':' + e.id] = { kind: p[1], id: String(e.id), data: e }; });
     });
     m['setting:currency'] = { kind: 'setting', id: 'currency', data: { value: d.currency } };
+    m['setting:budget'] = { kind: 'setting', id: 'budget', data: { value: d.budget > 0 ? d.budget : 0 } }; // 전체 월 예산
     return m;
   }
 
   function fromRows(base, prev) {
-    var d = { v: prev.v, lang: prev.lang, currency: prev.currency, cats: [], entries: [], recurring: [], income: [], incomeRec: [] };
+    var d = { v: prev.v, lang: prev.lang, currency: prev.currency, budget: prev.budget || 0, cats: [], entries: [], recurring: [], income: [], incomeRec: [] };
     var listOf = { entry: 'entries', rec: 'recurring', inc: 'income', increc: 'incomeRec' };
     Object.keys(base).forEach(function (k) {
       var kk = splitKey(k), o = JSON.parse(base[k]);
       if (kk.kind === 'cat') d.cats.push(o);
       else if (listOf[kk.kind]) d[listOf[kk.kind]].push(o);
       else if (kk.kind === 'setting' && kk.id === 'currency' && o && o.value) d.currency = o.value;
+      else if (kk.kind === 'setting' && kk.id === 'budget' && o) d.budget = o.value > 0 ? o.value : 0;
     });
     d.cats.sort(function (a, b) { return (a._ord || 0) - (b._ord || 0); });
     d.cats.forEach(function (c) { delete c._ord; });

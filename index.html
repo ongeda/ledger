@@ -156,7 +156,27 @@
   .rday{display:block;font-size:11px;opacity:.7;}
   .qa .qd{flex:.55;text-align:center;}
   .entry .edate{font-size:11px;font-weight:700;opacity:.75;min-width:32px;font-variant-numeric:tabular-nums;}
-  .rec-on{font-size:11px;opacity:.7;margin-top:5px;}
+  .rec-on{font-size:11px;margin-top:5px;display:flex;align-items:center;gap:4px;flex-wrap:wrap;}
+  .rec-on .chk{font-size:11px;gap:4px;}
+  /* saving insights */
+  .bud-track{position:relative;}
+  .pace-mark{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:rgba(38,49,59,.55);}
+  .pace{font-size:11px;margin-top:3px;opacity:.9;}
+  .pace .fast{color:#C4553F;font-weight:700;}
+  .dl{font-size:11px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--muted);}
+  .dl.up{color:#C4553F;} .dl.down{color:#2C7050;}
+  .cmp{margin-top:4px;font-size:12px;color:var(--muted);}
+  .tb{margin-top:12px;padding:10px 12px;border-radius:14px;background:var(--chip);font-size:12px;}
+  .tb-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px;font-weight:600;}
+  .tb-head .over{color:#C4553F;font-weight:700;}
+  .tb-lbl{display:inline-flex;align-items:center;gap:2px;font-weight:700;}
+  .tb-pen{padding:2px;}
+  .tb-track{background:#fff;}
+  .tb .pace{font-size:12px;margin-top:6px;}
+  .tb-set{border:1.5px dashed rgba(47,125,120,.45);background:transparent;color:var(--teal);border-radius:10px;padding:6px 10px;font-weight:700;font-size:12px;}
+  .tb-edit{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+  .tb-edit input{flex:1 1 140px;min-width:0;border:1px solid var(--line);border-radius:8px;padding:6px 8px;text-align:right;}
+  body.capturing .tb-set, body.capturing .tb-pen{display:none !important;}
   .side-row{display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:600;}
   .chk{display:flex;align-items:center;gap:6px;font-size:12px;}
 
@@ -254,6 +274,11 @@
       tagline:'매일의 지출을 칸칸이 기록해요',
       cats:{food:'식비', transport:'교통비', daily:'생활용품', medical:'의료비', fixed:'정기지출', other:'기타'},
       iconLbl:'아이콘', iconTip:'아래에서 고르거나 이모지를 직접 입력하세요', income:'수입', expense:'지출', incomeTitle:'이번 달 수입', expenseTitle:'이번 달 지출', balance:'잔액', saveRate:function(n){return '저축률 '+n+'%';}, incomeSrcPh:'수입 출처 (월급, 원고료…)', monthlyFixed:'매월 고정', recordOn:function(d){return d+'에 기록';}, recIncomeTitle:'매월 고정 수입', incEmpty:'이번 달 수입 기록이 없어요', meta:function(a,e,i){return '하루 평균 지출 '+a+' · 지출 '+e+'건 · 수입 '+i+'건';}, shot:'화면 저장', shotBusy:'이미지 만드는 중…', shotDone:'이미지를 저장했어요', shotFail:'이미지를 만들지 못했어요. 인터넷 연결을 확인해 주세요', monthListLbl:'이번 달 내역', monthListEmpty:'이번 달 내역이 아직 없어요', monthListFlag:'이번 달 내역 전체 보기', sideLbl:'위치', sideL:'왼쪽', sideR:'오른쪽', recTitle:'매월 고정 항목', recEmpty:'아직 고정 항목이 없어요. 월세, 통신비, 구독료 등을 넣어보세요', everyMonth:function(d){return '매월 '+d+'일';}, recStop:'이번 달부터 중지', skipped:'이번 달 이 건만 건너뛰었어요. 고정 항목은 그대로예요', recFlag:'매월 고정 항목 사용', totalsTitle:'이번 달 항목별 합계', grand:'합계', invalidDay:'날짜는 1–31로 입력해 주세요', dayPh:'일', recBadge:'고정',
+      totalBudget:'월 예산', setBudget:'+ 월 예산 설정', budgetPh2:'한 달 전체 예산 (비우면 해제)', expectedLbl:'오늘까지 적정 사용 위치',
+      paceFast:function(a){return '적정 속도보다 '+a+' 빠름';}, paceOk:function(a){return '적정 속도 ('+a+' 여유)';},
+      perDay:function(n,a){return '남은 '+n+'일 하루 '+a+' 이하';}, noRoom:'남은 예산 없음',
+      spentToDate:function(a){return '오늘까지 지출 '+a;}, cmpSame:function(n,a){return '지난달 같은 기간(1~'+n+'일) '+a+' 대비';}, cmpFull:function(a){return '지난달 '+a+' 대비';},
+      newTag:'신규', recAdded:function(d){return '매월 '+d+'일 고정 지출로 등록했어요';},
       weekdays:['일','월','화','수','목','금','토'],
       months:['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
       monthLabel:function(y,m){return y+'년 '+(m+1)+'월';},
@@ -276,6 +301,11 @@
       tagline:'每一笔花费，都有迹可循',
       cats:{food:'饮食', transport:'交通费', daily:'生活用品', medical:'医疗费', fixed:'定期支出', other:'其他'},
       iconLbl:'图标', iconTip:'在下面选择，或直接输入表情符号', income:'收入', expense:'支出', incomeTitle:'本月收入', expenseTitle:'本月支出', balance:'结余', saveRate:function(n){return '结余率 '+n+'%';}, incomeSrcPh:'收入来源（工资、稿费…）', monthlyFixed:'每月固定', recordOn:function(d){return '记在 '+d;}, recIncomeTitle:'每月固定收入', incEmpty:'本月还没有收入记录', meta:function(a,e,i){return '日均支出 '+a+' · 支出 '+e+' 笔 · 收入 '+i+' 笔';}, shot:'截图保存', shotBusy:'正在生成图片…', shotDone:'图片已保存', shotFail:'图片生成失败，请检查网络连接', monthListLbl:'本月明细', monthListEmpty:'本月还没有这一类的支出', monthListFlag:'显示本月全部明细', sideLbl:'位置', sideL:'左边', sideR:'右边', recTitle:'每月固定项目', recEmpty:'还没有固定项目，比如房租、话费、会员订阅', everyMonth:function(d){return '每月'+d+'日';}, recStop:'从本月起停止', skipped:'已跳过本月这一笔，固定项目仍保留', recFlag:'启用每月固定项目', totalsTitle:'本月各项合计', grand:'合计', invalidDay:'日期请填 1–31', dayPh:'日', recBadge:'固定',
+      totalBudget:'月预算', setBudget:'+ 设置月预算', budgetPh2:'整月总预算（清空即取消）', expectedLbl:'截至今天的合理进度',
+      paceFast:function(a){return '比合理进度多花 '+a;}, paceOk:function(a){return '进度正常（余量 '+a+'）';},
+      perDay:function(n,a){return '剩下 '+n+' 天每天不超过 '+a;}, noRoom:'预算已用完',
+      spentToDate:function(a){return '截至今天支出 '+a;}, cmpSame:function(n,a){return '上月同期（1–'+n+'日）'+a+' 相比';}, cmpFull:function(a){return '与上月 '+a+' 相比';},
+      newTag:'新增', recAdded:function(d){return '已设为每月'+d+'日的固定支出';},
       weekdays:['日','一','二','三','四','五','六'],
       months:['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
       monthLabel:function(y,m){return y+'年'+(m+1)+'月';},
@@ -298,6 +328,11 @@
       tagline:'Every expense, in its place',
       cats:{food:'Food', transport:'Transport', daily:'Household', medical:'Medical', fixed:'Recurring', other:'Other'},
       iconLbl:'Icon', iconTip:'Pick one below or type any emoji', income:'Income', expense:'Spent', incomeTitle:'Income this month', expenseTitle:'Spent this month', balance:'Balance', saveRate:function(n){return 'Saved '+n+'%';}, incomeSrcPh:'Source (salary, fees…)', monthlyFixed:'Monthly', recordOn:function(d){return 'On '+d;}, recIncomeTitle:'Monthly income', incEmpty:'No income recorded this month', meta:function(a,e,i){return 'Daily avg spend '+a+' · '+e+' expenses · '+i+' income';}, shot:'Save image', shotBusy:'Creating image…', shotDone:'Image saved', shotFail:'Could not create the image. Check your internet connection', monthListLbl:'This month', monthListEmpty:'Nothing in this category this month', monthListFlag:'Show the whole month', sideLbl:'Position', sideL:'Left', sideR:'Right', recTitle:'Monthly recurring', recEmpty:'No recurring items yet: rent, phone bill, subscriptions', everyMonth:function(d){return 'Monthly, day '+d;}, recStop:'Stop from this month', skipped:'Skipped this month only; the recurring item stays', recFlag:'Use monthly recurring items', totalsTitle:'Totals by category', grand:'Total', invalidDay:'Enter a day from 1 to 31', dayPh:'Day', recBadge:'Fixed',
+      totalBudget:'Monthly budget', setBudget:'+ Set monthly budget', budgetPh2:'Total for the month (empty = off)', expectedLbl:'Where spending should be by today',
+      paceFast:function(a){return a+' ahead of pace';}, paceOk:function(a){return 'On pace ('+a+' to spare)';},
+      perDay:function(n,a){return a+'/day for the '+n+' days left';}, noRoom:'No budget left',
+      spentToDate:function(a){return 'Spent so far '+a;}, cmpSame:function(n,a){return 'vs '+a+' last month (days 1–'+n+')';}, cmpFull:function(a){return 'vs '+a+' last month';},
+      newTag:'new', recAdded:function(d){return 'Saved as a monthly expense on day '+d;},
       weekdays:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
       months:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
       monthLabel:function(y,m){return T.en.months[m]+' '+y;},
@@ -340,7 +375,7 @@
       {id:'other', key:'other', name:'', emoji:'🧾', color:3, budget:0, side:'L'}
     ];
   }
-  var data = {v:4, lang:null, currency:'KRW', cats:defaultCats(), entries:[], recurring:[], income:[], incomeRec:[]};
+  var data = {v:4, lang:null, currency:'KRW', budget:0, cats:defaultCats(), entries:[], recurring:[], income:[], incomeRec:[]};
   try{
     var raw = localStorage.getItem(KEY);
     if(raw){
@@ -394,6 +429,7 @@
     y: now.getFullYear(), m: now.getMonth(),
     sel: iso(now),
     editingCat: null, catDraftColor: 0,
+    editingBudget: false, dRec: false, qRec: {},
     editingEntry: null,
     drafts: {},
     focus: null
@@ -540,10 +576,11 @@
     if(c.budget > 0){
       var ratio = mTotal / c.budget, w = Math.min(100, ratio*100);
       var over = mTotal > c.budget;
-      budHtml = '<div class="bud"><div class="bud-track"><div class="bud-fill" style="width:'+w.toFixed(1)+'%;background:'+(over?'#D9644D':p.dot)+'"></div></div>' +
+      var catList = monthEntries().filter(function(e){return e.cat===c.id;});
+      budHtml = '<div class="bud"><div class="bud-track"><div class="bud-fill" style="width:'+w.toFixed(1)+'%;background:'+(over?'#D9644D':p.dot)+'"></div>'+paceMark(c.budget)+'</div>' +
         '<div class="bud-txt"><span>'+esc(L.budget)+' '+fmt(c.budget)+'</span>' +
         (over ? '<span class="over">'+esc(L.over)+' '+fmt(mTotal-c.budget)+'</span>' : '<span>'+esc(L.left)+' '+fmt(c.budget-mTotal)+'</span>') +
-        '</div></div>';
+        '</div>' + paceHtml(c.budget, toDateSum(catList), mTotal) + '</div>';
     }
     var list = dayList.length ? '<ul class="entries">' + dayList.map(function(e){ return renderEntry(e, p, ml); }).join('') + '</ul>'
       : '<div class="empty">'+esc(ml ? L.monthListEmpty : L.cardEmpty)+'</div>';
@@ -560,7 +597,7 @@
           '<input class="qm" id="qm-'+c.id+'" data-draft="'+dk+'-m" data-enter="add" data-cat="'+c.id+'" inputmode="decimal" placeholder="'+esc(L.amountPh)+'" value="'+esc(ui.drafts[dk+'-m']||'')+'">' +
           '<button class="add" data-action="add" data-cat="'+c.id+'" style="background:'+p.dot+'" aria-label="'+esc(L.add)+'">'+ICON.plus+'</button>' +
         '</div>' +
-        (ml ? '<div class="rec-on">'+esc(L.recordOn(L.dayLabel(fromIso(ui.sel))))+'</div>' : '') +
+        (ml ? '<div class="rec-on"><label class="chk"><input type="checkbox" id="qr-'+c.id+'" data-qrec="'+c.id+'"'+(ui.qRec[c.id]?' checked':'')+'> '+esc(L.monthlyFixed)+'</label> · '+esc(L.recordOn(L.dayLabel(fromIso(ui.sel))))+'</div>' : '') +
       '</div>' +
       (data.recurring.some(function(r){ return r.cat===c.id && recActive(r, ymKey(ui.y,ui.m)); }) ? renderRec(c, p) : '') +
     '</section>';
@@ -575,12 +612,6 @@
         '<button class="x" data-action="stop-rec" data-id="'+r.id+'" aria-label="'+esc(L.recStop)+'" title="'+esc(L.recStop)+'">'+ICON.x+'</button></li>';
     }).join('') + '</ul>' : '<div class="empty">'+esc(L.recEmpty)+'</div>';
     return '<div class="cat-day"><div class="cat-day-lbl"><span>🔁 '+esc(L.recTitle)+'</span><span>'+(list.length?fmt(sum(list)):'')+'</span></div>' + rows + '</div>';
-    return '<div class="qa">' +
-        '<input class="qi" id="ri-'+c.id+'" data-draft="'+dk+'-i" data-enter="add-rec" data-cat="'+c.id+'" placeholder="'+esc(L.itemPh)+'" value="'+esc(ui.drafts[dk+'-i']||'')+'">' +
-        '<input class="qm" id="rm-'+c.id+'" data-draft="'+dk+'-m" data-enter="add-rec" data-cat="'+c.id+'" inputmode="decimal" placeholder="'+esc(L.amountPh)+'" value="'+esc(ui.drafts[dk+'-m']||'')+'">' +
-        '<input class="qd" id="rd-'+c.id+'" data-draft="'+dk+'-d" data-enter="add-rec" data-cat="'+c.id+'" inputmode="numeric" placeholder="'+esc(L.dayPh)+'" value="'+esc(ui.drafts[dk+'-d']||'')+'">' +
-        '<button class="add" data-action="add-rec" data-cat="'+c.id+'" style="background:'+p.dot+'" aria-label="'+esc(L.add)+'">'+ICON.plus+'</button>' +
-      '</div></div>';
   }
 
   function renderEntry(e, p, showDate){
@@ -599,6 +630,67 @@
       '<button class="x" data-action="del-entry" data-id="'+e.id+'" aria-label="'+esc(L.delEntry)+'">'+ICON.x+'</button></li>';
   }
 
+  /* ---------- saving insights: last-month comparison, budget pace ---------- */
+  function viewInfo(){
+    var dim = new Date(ui.y, ui.m+1, 0).getDate();
+    var isCur = ui.y===now.getFullYear() && ui.m===now.getMonth();
+    return {dim:dim, isCur:isCur, day: isCur ? now.getDate() : dim};
+  }
+  function dayOf(e){ return +e.date.slice(8,10); }
+  // this month (1..today when viewing the current month) vs the same days of the previous month
+  function prevCompare(){
+    var v = viewInfo(), pd = new Date(ui.y, ui.m-1, 1);
+    var pdim = new Date(pd.getFullYear(), pd.getMonth()+1, 0).getDate();
+    var cut = v.day, pcut = v.isCur ? Math.min(cut, pdim) : pdim;
+    return {
+      cur: monthEntries().filter(function(e){ return dayOf(e)<=cut; }),
+      prev: entriesFor(pd.getFullYear(), pd.getMonth()).filter(function(e){ return dayOf(e)<=pcut; }),
+      cut: cut, partial: v.isCur
+    };
+  }
+  function deltaHtml(cur, prev, withAmt){
+    var L = t();
+    if(!prev && !cur) return '';
+    if(!prev) return '<span class="dl up">'+esc(L.newTag)+'</span>';
+    var diff = Math.round((cur-prev)*100)/100, pct = Math.round(diff/prev*100);
+    if(Math.abs(diff) < 0.005) return '<span class="dl">±0%</span>';
+    var up = diff > 0;
+    return '<span class="dl '+(up?'up':'down')+'">'+(up?'▲':'▼')+(withAmt?' '+fmt(Math.abs(diff))+' ':'')+(withAmt?'(':'')+(up?'+':'−')+Math.abs(pct)+'%'+(withAmt?')':'')+'</span>';
+  }
+  // spentToDate: expenses dated up to today; committed: everything in the month (incl. scheduled fixed costs)
+  function paceHtml(budget, spentToDate, committed){
+    var L = t(), v = viewInfo();
+    if(!(budget > 0) || !v.isCur) return '';
+    var expected = budget * v.day / v.dim, remDays = v.dim - v.day + 1;
+    var room = Math.max(0, budget - committed), gap = Math.round((spentToDate - expected)*100)/100;
+    var head = gap > 0 ? '<span class="fast">'+esc(L.paceFast(fmt(gap)))+'</span>' : esc(L.paceOk(fmt(-gap)));
+    var tail = room > 0 ? esc(L.perDay(remDays, fmt(Math.floor(room/remDays*100)/100))) : '<span class="fast">'+esc(L.noRoom)+'</span>';
+    return '<div class="pace">'+head+' · '+tail+'</div>';
+  }
+  function paceMark(budget){
+    var v = viewInfo();
+    if(!(budget > 0) || !v.isCur) return '';
+    return '<span class="pace-mark" style="left:'+(v.day/v.dim*100).toFixed(1)+'%" title="'+esc(t().expectedLbl)+'"></span>';
+  }
+  function toDateSum(list){ var d = viewInfo().day; return sum(list.filter(function(e){ return dayOf(e)<=d; })); }
+
+  function renderTotalBudget(total, list){
+    var L = t(), b = data.budget || 0;
+    if(ui.editingBudget){
+      return '<div class="tb"><div class="tb-edit"><span class="tb-lbl">'+esc(L.totalBudget)+'</span>' +
+        '<input id="tb-in" inputmode="decimal" data-enter="save-budget" placeholder="'+esc(L.budgetPh2)+'" value="'+(b||'')+'">' +
+        '<button class="mini sec" data-action="cancel-budget">'+esc(L.cancel)+'</button>' +
+        '<button class="mini pri" data-action="save-budget">'+esc(L.save)+'</button></div></div>';
+    }
+    if(!(b > 0)) return '<div class="tb"><button class="tb-set" data-action="edit-budget">'+esc(L.setBudget)+'</button></div>';
+    var over = total > b, w = Math.min(100, total/b*100);
+    return '<div class="tb">' +
+      '<div class="tb-head"><span class="tb-lbl">'+esc(L.totalBudget)+' '+fmt(b)+' <button class="ghost tb-pen" data-action="edit-budget" aria-label="'+esc(L.totalBudget)+'">'+ICON.pencil+'</button></span>' +
+        (over ? '<span class="over">'+esc(L.over)+' '+fmt(total-b)+'</span>' : '<span>'+esc(L.left)+' '+fmt(b-total)+'</span>') + '</div>' +
+      '<div class="bud-track tb-track"><div class="bud-fill" style="width:'+w.toFixed(1)+'%;background:'+(over?'#D9644D':'var(--teal)')+'"></div>'+paceMark(b)+'</div>' +
+      paceHtml(b, toDateSum(list), total) + '</div>';
+  }
+
   function renderSummary(){
     var L = t();
     var list = monthEntries(), total = sum(list);
@@ -606,6 +698,15 @@
     var dim = new Date(ui.y, ui.m+1, 0).getDate();
     var isCur = ui.y===now.getFullYear() && ui.m===now.getMonth();
     var days = isCur ? now.getDate() : dim;
+    var cmp = prevCompare();
+    var catDelta = function(id){
+      var f = function(e){ return e.cat===id; };
+      return deltaHtml(sum(cmp.cur.filter(f)), sum(cmp.prev.filter(f)), false);
+    };
+    var cmpCur = sum(cmp.cur), cmpPrev = sum(cmp.prev);
+    var cmpHtml = (cmpCur || cmpPrev) ? '<div class="cmp">' +
+      (cmp.partial ? esc(L.spentToDate(fmt(cmpCur)))+' · '+esc(L.cmpSame(cmp.cut, fmt(cmpPrev))) : esc(L.cmpFull(fmt(cmpPrev)))) +
+      ' '+deltaHtml(cmpCur, cmpPrev, true)+'</div>' : '';
     var all = data.cats.map(function(c){ return {c:c, v:sum(list.filter(function(e){return e.cat===c.id;}))}; });
     var parts = all.filter(function(x){return x.v>0;}).sort(function(a,b){return b.v-a.v;});
     var inner = '';
@@ -620,6 +721,7 @@
         return '<div class="tot-row'+(x.v?'':' zero')+'"><span class="dot" style="background:'+p.dot+'"></span>' +
           '<span class="nm">'+esc(x.c.emoji+' '+catName(x.c))+'</span>' +
           '<span class="pc">'+(total?Math.round(x.v/total*100):0)+'%</span>' +
+          catDelta(x.c.id) +
           '<span class="v">'+fmt(x.v)+'</span></div>';
       }).join('') + '</div>' +
       '<div class="tot-row grand"><span class="nm">'+esc(L.grand)+'</span><span class="v">'+fmt(total)+'</span></div></div>';
@@ -631,7 +733,8 @@
         '<div class="fb bal'+(bal<0?' neg':'')+'"><div class="fl">'+esc(L.balance)+'</div><div class="fv">'+(bal<0?'−':'')+fmt(Math.abs(bal))+'</div>' +
           (incTotal>0?'<div class="fr">'+esc(L.saveRate(Math.round(bal/incTotal*100)))+'</div>':'')+'</div>' +
       '</div>' +
-      '<div class="sum-meta">'+esc(L.meta(fmt(days?total/days:0), list.length, incList.length))+'</div>' +
+      '<div class="sum-meta">'+esc(L.meta(fmt(days?(isCur?toDateSum(list):total)/days:0), list.length, incList.length))+'</div>' +
+      cmpHtml + renderTotalBudget(total, list) +
       inner + '</section>';
   }
 
@@ -721,15 +824,24 @@
         '<select id="d-cat" data-draft="d-cat" aria-label="'+esc(L.category)+'">'+catOpts+'</select>' +
         '<input class="qi" id="d-i" data-draft="d-i" data-enter="add-day" placeholder="'+esc(L.itemPh)+'" value="'+esc(ui.drafts['d-i']||'')+'">' +
         '<input class="qm" id="d-m" data-draft="d-m" data-enter="add-day" inputmode="decimal" placeholder="'+esc(L.amountPh)+'" value="'+esc(ui.drafts['d-m']||'')+'">' +
+        '<label class="chk"><input type="checkbox" id="d-rec"'+(ui.dRec?' checked':'')+'> '+esc(L.monthlyFixed)+'</label>' +
         '<button class="add" data-action="add-day">'+esc(L.add)+'</button>' +
       '</div></section>';
   }
 
   /* ---------- actions ---------- */
-  function addEntry(catId, item, amtStr, focusId, draftPrefix, draftSuffixes){
+  function addEntry(catId, item, amtStr, focusId, draftPrefix, draftSuffixes, asRecurring){
     var amt = parseAmt(amtStr);
     if(!(amt > 0)){ toast(t().invalidAmt); ui.focus = focusId.replace(/^qi-|^d-i$/, function(m){ return m==='d-i'?'d-m':'qm-'; }); render(); return; }
-    data.entries.push({id:uid(), date:ui.sel, cat:catId, item:String(item||'').trim(), amount:amt});
+    if(asRecurring){
+      // monthly fixed expense: repeats on this day every month from the selected month on
+      var day = fromIso(ui.sel).getDate();
+      data.recurring.push({id:uid(), cat:catId, item:String(item||'').trim(), amount:amt, day:day, start:ui.sel.slice(0,7), skip:{}, over:{}});
+      toast(t().recAdded(day));
+      ui.dRec = false; ui.qRec[catId] = false;
+    } else {
+      data.entries.push({id:uid(), date:ui.sel, cat:catId, item:String(item||'').trim(), amount:amt});
+    }
     save();
     draftSuffixes.forEach(function(k){ delete ui.drafts[draftPrefix+k]; });
     ui.focus = focusId;
@@ -814,12 +926,12 @@
       case 'select': ui.sel = el.getAttribute('data-date'); ui.editingEntry = null; render(); break;
       case 'add': {
         var cid = el.getAttribute('data-cat');
-        addEntry(cid, ui.drafts['c-'+cid+'-i'], ui.drafts['c-'+cid+'-m'], 'qi-'+cid, 'c-'+cid, ['-i','-m']);
+        addEntry(cid, ui.drafts['c-'+cid+'-i'], ui.drafts['c-'+cid+'-m'], 'qi-'+cid, 'c-'+cid, ['-i','-m'], (ui.qRec[cid] && catById(cid) && catById(cid).monthList));
         break;
       }
       case 'add-day': {
         var sel = document.getElementById('d-cat');
-        addEntry(sel ? sel.value : data.cats[0].id, ui.drafts['d-i'], ui.drafts['d-m'], 'd-i', 'd', ['-i','-m']);
+        addEntry(sel ? sel.value : data.cats[0].id, ui.drafts['d-i'], ui.drafts['d-m'], 'd-i', 'd', ['-i','-m'], !!ui.dRec);
         break;
       }
       case 'del-entry':
@@ -831,6 +943,9 @@
         }
         save(); render(); break;
       case 'add-rec': addRec(el.getAttribute('data-cat')); break;
+      case 'edit-budget': ui.editingBudget = true; ui.focus = 'tb-in'; render(); break;
+      case 'cancel-budget': ui.editingBudget = false; render(); break;
+      case 'save-budget': saveBudget(); break;
       case 'add-inc': addIncome(); break;
       case 'del-inc':
         if(id.indexOf('ri:')===0){
@@ -941,6 +1056,13 @@
     save(); ui.focus = 'ri-'+cid; render();
   }
 
+  function saveBudget(){
+    var el = document.getElementById('tb-in'), raw = el ? el.value.trim() : '';
+    var b = raw === '' ? 0 : parseAmt(raw);
+    if(raw !== '' && !(b > 0)){ toast(t().invalidAmt); return; }
+    data.budget = b; ui.editingBudget = false; save(); render();
+  }
+
   function saveEntry(id){
     var amt = parseAmt(document.getElementById('ee-m').value);
     if(!(amt>0)){ toast(t().invalidAmt); return; }
@@ -991,21 +1113,24 @@
     if(a==='add'){
       var cid = el.getAttribute('data-cat');
       if(el.classList.contains('qi') && !ui.drafts['c-'+cid+'-m']){ var m=document.getElementById('qm-'+cid); if(m) m.focus(); return; }
-      addEntry(cid, ui.drafts['c-'+cid+'-i'], ui.drafts['c-'+cid+'-m'], 'qi-'+cid, 'c-'+cid, ['-i','-m']);
+      addEntry(cid, ui.drafts['c-'+cid+'-i'], ui.drafts['c-'+cid+'-m'], 'qi-'+cid, 'c-'+cid, ['-i','-m'], (ui.qRec[cid] && catById(cid) && catById(cid).monthList));
     } else if(a==='add-day'){
       if(el.id==='d-i' && !ui.drafts['d-m']){ document.getElementById('d-m').focus(); return; }
       var sel = document.getElementById('d-cat');
-      addEntry(sel.value, ui.drafts['d-i'], ui.drafts['d-m'], 'd-i', 'd', ['-i','-m']);
+      addEntry(sel.value, ui.drafts['d-i'], ui.drafts['d-m'], 'd-i', 'd', ['-i','-m'], !!ui.dRec);
     } else if(a==='add-inc'){
       if(el.id==='inc-i' && !ui.drafts['inc-m']){ document.getElementById('inc-m').focus(); return; }
       addIncome();
     } else if(a==='add-rec'){
       addRec(el.getAttribute('data-cat'));
+    } else if(a==='save-budget'){
+      saveBudget();
     } else if(a==='save-entry'){
       saveEntry(el.getAttribute('data-id'));
     }
   });
   document.addEventListener('keydown', function(ev){
+    if(ev.key==='Escape' && ui.editingBudget){ ui.editingBudget = false; render(); return; }
     if(ev.key==='Escape' && (ui.editingEntry || ui.editingCat)){
       if(ui.editingCat){ var cc=catById(ui.editingCat); if(cc && cc._fresh){ data.cats=data.cats.filter(function(x){return x.id!==cc.id;}); save(); } }
       ui.editingEntry = null; ui.editingCat = null; render();
@@ -1019,6 +1144,10 @@
       if(y>=1900 && y<=2100) goMonth(y, ui.m); else el.value = ui.y;
     } else if(el.id==='month-in'){
       goMonth(ui.y, parseInt(el.value,10));
+    } else if(el.id==='d-rec'){
+      ui.dRec = el.checked;
+    } else if(el.getAttribute && el.getAttribute('data-qrec')){
+      ui.qRec[el.getAttribute('data-qrec')] = el.checked;
     } else if(el.id==='cur-in'){
       data.currency = el.value; save(); render();
     } else if(el.id==='restore-file'){
@@ -1029,7 +1158,7 @@
           var p = JSON.parse(r.result);
           if(!p || !Array.isArray(p.cats) || !Array.isArray(p.entries) || !p.cats.length) throw 0;
           if(!confirm(t().restoreConfirm)) return;
-          data = {lang: data.lang, currency: CUR[p.currency]?p.currency:'KRW', v:Math.min(4, (p.v|0)||1), cats:p.cats, entries:p.entries.filter(function(e){ return e && typeof e.date==='string' && e.amount>0; }), recurring: Array.isArray(p.recurring)?p.recurring:[], income: Array.isArray(p.income)?p.income:[], incomeRec: Array.isArray(p.incomeRec)?p.incomeRec:[]};
+          data = {lang: data.lang, currency: CUR[p.currency]?p.currency:'KRW', budget: p.budget>0?p.budget:0, v:Math.min(4, (p.v|0)||1), cats:p.cats, entries:p.entries.filter(function(e){ return e && typeof e.date==='string' && e.amount>0; }), recurring: Array.isArray(p.recurring)?p.recurring:[], income: Array.isArray(p.income)?p.income:[], incomeRec: Array.isArray(p.incomeRec)?p.incomeRec:[]};
           save(); render(); toast(t().restored);
         }catch(e){ toast(t().restoreFail); }
         el.value = '';
@@ -1059,7 +1188,7 @@
       isBusy: function(){
         // 입력 중인 칸에 글자가 있거나 최근 8초 안에 타이핑했으면 "사용 중" → 화면 교체 보류
         var a = document.activeElement;
-        return !!(ui.editingCat || ui.editingEntry || shooting || (Date.now() - lastTyping < 8000) ||
+        return !!(ui.editingCat || ui.editingEntry || ui.editingBudget || shooting || (Date.now() - lastTyping < 8000) ||
           (a && /^(INPUT|TEXTAREA)$/.test(a.tagName) && a.type !== 'checkbox' && a.value !== ''));
       },
       toast: toast,
