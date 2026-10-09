@@ -4,7 +4,7 @@
  * - 동기화 서버 요청(Supabase 등): 건드리지 않음 (캐시하면 안 됨)
  * 앱 파일을 고친 뒤에는 VERSION 숫자를 올리면 모든 기기가 새로 받습니다.
  */
-var VERSION = 'v11';
+var VERSION = 'v12';
 var CACHE = 'recordable-' + VERSION;
 var APP = ['./', 'index.html', 'setup.html', 'config.js', 'sync.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png'];
 var CDN = [

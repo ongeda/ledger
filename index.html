@@ -720,7 +720,6 @@
           '<div class="emo-lbl">'+esc(L.iconLbl)+'</div>' +
           '<div class="emoji-grid">'+EMOJIS.map(function(em){ return '<button type="button" class="em'+(em===c.emoji?' on':'')+'" data-action="pick-emoji" data-e="'+em+'">'+em+'</button>'; }).join('')+'</div>' +
           '<div class="swatches">'+sw+'</div>' +
-          '<label class="chk"><input type="checkbox" id="cf-ml"'+(c.monthList?' checked':'')+'> '+esc(L.monthListFlag)+'</label>' +
           '<label class="chk"><input type="checkbox" id="cf-opt"'+(c.opt?' checked':'')+'> '+esc(L.optCat)+'</label>' +
           '<label class="chk"><input type="checkbox" id="cf-shared"'+(c.shared?' checked':'')+'> '+esc(L.sharedCat)+'</label>' +
           '<div class="side-row"><span>'+esc(L.sideLbl)+'</span><div class="seg">' +
@@ -732,7 +731,8 @@
         '</div></section>';
     }
     var mTotal = sum(monthEntries().filter(function(e){return e.cat===c.id;}));
-    var ml = !!c.monthList || ui.cardView === 'month';
+    var ml = ui.cardView === 'month';
+    var fixedCard = !!c.monthList || c.key === 'fixed'; // card meant for monthly fixed costs keeps its '매월 고정' checkbox
     var dayList = (ml ? monthEntries() : dayEntries(ui.sel)).filter(function(e){return e.cat===c.id;})
       .sort(function(a,b){ return a.date<b.date?-1:a.date>b.date?1:0; });
     var budHtml = '';
@@ -760,7 +760,7 @@
           '<input class="qm" id="qm-'+c.id+'" data-draft="'+dk+'-m" data-enter="add" data-cat="'+c.id+'" inputmode="decimal" placeholder="'+esc(L.amountPh)+'" value="'+esc(ui.drafts[dk+'-m']||'')+'">' +
           '<button class="add" data-action="add" data-cat="'+c.id+'" style="background:'+p.dot+'" aria-label="'+esc(L.add)+'">'+ICON.plus+'</button>' +
         '</div>' +
-        (ml ? '<div class="rec-on"><label class="chk"><input type="checkbox" id="qr-'+c.id+'" data-qrec="'+c.id+'"'+(ui.qRec[c.id]?' checked':'')+'> '+esc(L.monthlyFixed)+'</label> · '+esc(L.recordOn(L.dayLabel(fromIso(ui.sel))))+'</div>' : '') +
+        ((ml || fixedCard) ? '<div class="rec-on">'+(fixedCard ? '<label class="chk"><input type="checkbox" id="qr-'+c.id+'" data-qrec="'+c.id+'"'+(ui.qRec[c.id]?' checked':'')+'> '+esc(L.monthlyFixed)+'</label>'+(ml?' · ':'') : '')+(ml ? esc(L.recordOn(L.dayLabel(fromIso(ui.sel)))) : '')+'</div>' : '') +
       '</div>' +
       (data.recurring.some(function(r){ return r.cat===c.id && recActive(r, ymKey(ui.y,ui.m)); }) ? renderRec(c, p) : '') +
     '</section>';
@@ -1341,7 +1341,7 @@
       case 'select': ui.sel = el.getAttribute('data-date'); ui.editingEntry = null; render(); break;
       case 'add': {
         var cid = el.getAttribute('data-cat');
-        addEntry(cid, ui.drafts['c-'+cid+'-i'], ui.drafts['c-'+cid+'-m'], 'qi-'+cid, 'c-'+cid, ['-i','-m'], (ui.qRec[cid] && catById(cid) && catById(cid).monthList));
+        addEntry(cid, ui.drafts['c-'+cid+'-i'], ui.drafts['c-'+cid+'-m'], 'qi-'+cid, 'c-'+cid, ['-i','-m'], (ui.qRec[cid] && catById(cid) && (catById(cid).monthList || catById(cid).key === 'fixed')));
         break;
       }
       case 'add-day': {
@@ -1527,7 +1527,7 @@
     if(em && window.Intl && Intl.Segmenter){ var it = new Intl.Segmenter().segment(em)[Symbol.iterator]().next(); if(!it.done) em = it.value.segment; }
     c.emoji = em || '•';
     var b = parseAmt(f.budget); c.budget = b>0 ? b : 0;
-    c.color = ui.catDraftColor; c.monthList = !!f.ml; if(f.opt) c.opt = true; else delete c.opt; if(f.shared) c.shared = true; else delete c.shared; c.side = ui.catDraftSide==='R' ? 'R' : 'L'; delete c._fresh;
+    c.color = ui.catDraftColor; if(f.opt) c.opt = true; else delete c.opt; if(f.shared) c.shared = true; else delete c.shared; c.side = ui.catDraftSide==='R' ? 'R' : 'L'; delete c._fresh;
     ui.editingCat = null; save(); render();
   }
 
@@ -1641,7 +1641,7 @@
     if(a==='add'){
       var cid = el.getAttribute('data-cat');
       if(el.classList.contains('qi') && !ui.drafts['c-'+cid+'-m']){ var m=document.getElementById('qm-'+cid); if(m) m.focus(); return; }
-      addEntry(cid, ui.drafts['c-'+cid+'-i'], ui.drafts['c-'+cid+'-m'], 'qi-'+cid, 'c-'+cid, ['-i','-m'], (ui.qRec[cid] && catById(cid) && catById(cid).monthList));
+      addEntry(cid, ui.drafts['c-'+cid+'-i'], ui.drafts['c-'+cid+'-m'], 'qi-'+cid, 'c-'+cid, ['-i','-m'], (ui.qRec[cid] && catById(cid) && (catById(cid).monthList || catById(cid).key === 'fixed')));
     } else if(a==='add-day'){
       if(el.id==='d-i' && !ui.drafts['d-m']){ document.getElementById('d-m').focus(); return; }
       var sel = document.getElementById('d-cat');
