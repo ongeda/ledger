@@ -85,7 +85,20 @@
   .qa input{min-width:0;border:1px solid rgba(38,49,59,.12);background:rgba(255,255,255,.9);border-radius:10px;padding:8px 9px;font-size:13px;}
   .qa .qi{flex:1.3;} .qa .qm{flex:1;text-align:right;font-variant-numeric:tabular-nums;}
   .qa .add{border:none;border-radius:10px;padding:0 10px;color:#fff;font-weight:700;flex-shrink:0;}
-  .edit-row{display:flex;gap:6px;align-items:center;background:#fff;border-radius:12px;padding:6px;}
+  .edit-row{display:flex;flex-direction:column;gap:6px;background:#fff;border-radius:12px;padding:8px;box-shadow:0 0 0 2px var(--teal) inset;}
+  .er-line{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+  .er-line select{border:1px solid var(--line);border-radius:8px;padding:6px 4px;font-size:12px;background:#fff;min-width:0;}
+  .ee-cat{flex:1 1 96px;} .ee-i{flex:2 1 110px;} .ee-m{flex:1 1 80px;text-align:right;}
+  .er-btns{margin-left:auto;display:flex;gap:6px;}
+  .er-note{font-size:11px;color:var(--muted);}
+  .day-list .edit-row, .entries .edit-row{margin:2px 0;align-items:stretch;}
+  .d-edit{display:flex;align-items:center;gap:8px;flex:1;min-width:0;border:none;background:none;padding:0;text-align:left;cursor:pointer;}
+  .d-edit:hover .it{text-decoration:underline;text-decoration-color:rgba(38,49,59,.3);}
+  .entry.on-sel{box-shadow:0 0 0 2px rgba(47,125,120,.45) inset;}
+  .cv-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--card);border-radius:16px;padding:8px 10px 8px 14px;}
+  .cv-lbl{font-size:12px;font-weight:700;color:var(--muted);}
+  .cv-bar .seg button{padding:5px 10px;font-size:12px;}
+  body.capturing .cv-bar{display:none !important;}
   .edit-row input{min-width:0;border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:13px;}
   .mini{border:none;border-radius:8px;padding:6px 9px;font-size:12px;font-weight:700;}
   .mini.pri{background:var(--teal);color:#fff;} .mini.sec{background:var(--chip);}
@@ -347,7 +360,7 @@
       tagline:'매일의 지출을 칸칸이 기록해요',
       cats:{food:'식비', transport:'교통비', daily:'생활용품', medical:'의료비', fixed:'정기지출', other:'기타'},
       iconLbl:'아이콘', iconTip:'아래에서 고르거나 이모지를 직접 입력하세요', income:'수입', expense:'지출', incomeTitle:'이번 달 수입', expenseTitle:'이번 달 지출', balance:'잔액', saveRate:function(n){return '저축률 '+n+'%';}, incomeSrcPh:'수입 출처 (월급, 원고료…)', monthlyFixed:'매월 고정', recordOn:function(d){return d+'에 기록';}, recIncomeTitle:'매월 고정 수입', incEmpty:'이번 달 수입 기록이 없어요', meta:function(a,e,i){return '하루 평균 지출 '+a+' · 지출 '+e+'건 · 수입 '+i+'건';}, shot:'화면 저장', shotBusy:'이미지 만드는 중…', shotDone:'이미지를 저장했어요', shotFail:'이미지를 만들지 못했어요. 인터넷 연결을 확인해 주세요', monthListLbl:'이번 달 내역', monthListEmpty:'이번 달 내역이 아직 없어요', monthListFlag:'이번 달 내역 전체 보기', sideLbl:'위치', sideL:'왼쪽', sideR:'오른쪽', recTitle:'매월 고정 항목', recEmpty:'아직 고정 항목이 없어요. 월세, 통신비, 구독료 등을 넣어보세요', everyMonth:function(d){return '매월 '+d+'일';}, recStop:'이번 달부터 중지', skipped:'이번 달 이 건만 건너뛰었어요. 고정 항목은 그대로예요', recFlag:'매월 고정 항목 사용', totalsTitle:'이번 달 항목별 합계', grand:'합계', invalidDay:'날짜는 1–31로 입력해 주세요', dayPh:'일', recBadge:'고정',
-      byLbl:'작성자', sharedLbl:'공동', whoLbl:'지출 주체', sharedCat:'공동 지출 분류 (기본값: 공동)', recordedBy:function(n){return '기록: '+n;}, acTimes:function(n){return n+'회';}, tabRec:'기록', tabAna:'분석', moreLbl:'더보기', syncSetup:'동기화 설정', stSpent:function(m){return m+' 지출';}, stLeft:'예산 남음', stPerDay:'하루 가능', stPerDayFast:'하루 가능 (속도 빠름)', payLbl:'결제 수단', pays:{card:'카드',cash:'현금',transfer:'이체'}, payNone:'미지정', searchTitle:'찾기', searchAll:'전체', searchPh:'항목·분류·작성자·결제 수단 (예: 배달)', searchHint:'찾을 단어를 입력하면 기간 안의 기록을 모아서 보여줘요', searchNone:'찾는 기록이 없어요', searchSum:function(n){return n+'건';}, searchMore:function(n){return '외 '+n+'건은 생략 (단어를 더 구체적으로 입력해 보세요)';}, trend6:'6개월', trendYear:function(y){return y+'년';}, yearTitle:function(y){return y+'년 월별 지출';}, yearTotal:function(y,a){return y+'년 지출 합계 '+a;}, yearAvg:function(n,a){return '월평균 '+a+' ('+n+'개월)';}, incomeTitleY:'올해 수입', expenseTitleY:'올해 지출', optCat:'선택 지출 분류 (외식·쇼핑처럼 줄일 수 있는 돈)', optLbl:'선택', needLbl:'필수', optSave:'← 줄일 수 있는 돈', optHint:'분류 편집(연필)에서 "선택 지출 분류"를 켜면 줄일 수 있는 돈이 따로 보여요', trendTitle:'최근 6개월 지출', trendHint:'막대를 누르면 그 달로 이동', avgLbl:'평균', schedLbl:'예정 고정지출', trendAvg:function(n,a){return '지난 '+n+'개월 평균 '+a;}, trendCur:function(a){return '이번 달 '+a;}, totalBudget:'월 예산', setBudget:'+ 월 예산 설정', budgetPh2:'한 달 전체 예산 (비우면 해제)', expectedLbl:'오늘까지 적정 사용 위치',
+      byLbl:'작성자', tapToEdit:'눌러서 수정', recEditNote:'고정 항목: 이번 달 내용·금액만 바뀌어요', movedTo:function(n){return n+'(으)로 옮겼어요';}, cvLbl:'분류 칸 보기', cvDay:'선택한 날', cvMonth:function(m){return m+' 전체';}, sharedLbl:'공동', whoLbl:'지출 주체', sharedCat:'공동 지출 분류 (기본값: 공동)', recordedBy:function(n){return '기록: '+n;}, acTimes:function(n){return n+'회';}, tabRec:'기록', tabAna:'분석', moreLbl:'더보기', syncSetup:'동기화 설정', stSpent:function(m){return m+' 지출';}, stLeft:'예산 남음', stPerDay:'하루 가능', stPerDayFast:'하루 가능 (속도 빠름)', payLbl:'결제 수단', pays:{card:'카드',cash:'현금',transfer:'이체'}, payNone:'미지정', searchTitle:'찾기', searchAll:'전체', searchPh:'항목·분류·작성자·결제 수단 (예: 배달)', searchHint:'찾을 단어를 입력하면 기간 안의 기록을 모아서 보여줘요', searchNone:'찾는 기록이 없어요', searchSum:function(n){return n+'건';}, searchMore:function(n){return '외 '+n+'건은 생략 (단어를 더 구체적으로 입력해 보세요)';}, trend6:'6개월', trendYear:function(y){return y+'년';}, yearTitle:function(y){return y+'년 월별 지출';}, yearTotal:function(y,a){return y+'년 지출 합계 '+a;}, yearAvg:function(n,a){return '월평균 '+a+' ('+n+'개월)';}, incomeTitleY:'올해 수입', expenseTitleY:'올해 지출', optCat:'선택 지출 분류 (외식·쇼핑처럼 줄일 수 있는 돈)', optLbl:'선택', needLbl:'필수', optSave:'← 줄일 수 있는 돈', optHint:'분류 편집(연필)에서 "선택 지출 분류"를 켜면 줄일 수 있는 돈이 따로 보여요', trendTitle:'최근 6개월 지출', trendHint:'막대를 누르면 그 달로 이동', avgLbl:'평균', schedLbl:'예정 고정지출', trendAvg:function(n,a){return '지난 '+n+'개월 평균 '+a;}, trendCur:function(a){return '이번 달 '+a;}, totalBudget:'월 예산', setBudget:'+ 월 예산 설정', budgetPh2:'한 달 전체 예산 (비우면 해제)', expectedLbl:'오늘까지 적정 사용 위치',
       paceFast:function(a){return '적정 속도보다 '+a+' 빠름';}, paceOk:function(a){return '적정 속도 ('+a+' 여유)';},
       perDay:function(n,a){return '남은 '+n+'일 하루 '+a+' 이하';}, noRoom:'남은 예산 없음',
       spentToDate:function(a){return '오늘까지 지출 '+a;}, cmpSame:function(n,a){return '지난달 같은 기간(1~'+n+'일) '+a+' 대비';}, cmpFull:function(a){return '지난달 '+a+' 대비';},
@@ -374,7 +387,7 @@
       tagline:'每一笔花费，都有迹可循',
       cats:{food:'饮食', transport:'交通费', daily:'生活用品', medical:'医疗费', fixed:'定期支出', other:'其他'},
       iconLbl:'图标', iconTip:'在下面选择，或直接输入表情符号', income:'收入', expense:'支出', incomeTitle:'本月收入', expenseTitle:'本月支出', balance:'结余', saveRate:function(n){return '结余率 '+n+'%';}, incomeSrcPh:'收入来源（工资、稿费…）', monthlyFixed:'每月固定', recordOn:function(d){return '记在 '+d;}, recIncomeTitle:'每月固定收入', incEmpty:'本月还没有收入记录', meta:function(a,e,i){return '日均支出 '+a+' · 支出 '+e+' 笔 · 收入 '+i+' 笔';}, shot:'截图保存', shotBusy:'正在生成图片…', shotDone:'图片已保存', shotFail:'图片生成失败，请检查网络连接', monthListLbl:'本月明细', monthListEmpty:'本月还没有这一类的支出', monthListFlag:'显示本月全部明细', sideLbl:'位置', sideL:'左边', sideR:'右边', recTitle:'每月固定项目', recEmpty:'还没有固定项目，比如房租、话费、会员订阅', everyMonth:function(d){return '每月'+d+'日';}, recStop:'从本月起停止', skipped:'已跳过本月这一笔，固定项目仍保留', recFlag:'启用每月固定项目', totalsTitle:'本月各项合计', grand:'合计', invalidDay:'日期请填 1–31', dayPh:'日', recBadge:'固定',
-      byLbl:'记录人', sharedLbl:'共同', whoLbl:'谁的支出', sharedCat:'共同支出分类（默认：共同）', recordedBy:function(n){return '记录人：'+n;}, acTimes:function(n){return n+'次';}, tabRec:'记账', tabAna:'分析', moreLbl:'更多', syncSetup:'同步设置', stSpent:function(m){return m+'支出';}, stLeft:'预算剩余', stPerDay:'每天可用', stPerDayFast:'每天可用（花得快）', payLbl:'支付方式', pays:{card:'刷卡',cash:'现金',transfer:'转账'}, payNone:'未指定', searchTitle:'搜索', searchAll:'全部', searchPh:'项目、分类、记录人、支付方式（例：外卖）', searchHint:'输入关键词，会列出时间范围内的相关记录', searchNone:'没有找到记录', searchSum:function(n){return n+' 笔';}, searchMore:function(n){return '另有 '+n+' 笔未显示（请输入更具体的关键词）';}, trend6:'6个月', trendYear:function(y){return y+'年';}, yearTitle:function(y){return y+'年每月支出';}, yearTotal:function(y,a){return y+'年支出合计 '+a;}, yearAvg:function(n,a){return '月均 '+a+'（'+n+'个月）';}, incomeTitleY:'全年收入', expenseTitleY:'全年支出', optCat:'可选支出分类（外食、购物等可以省的钱）', optLbl:'可选', needLbl:'必要', optSave:'← 可以省的钱', optHint:'在分类编辑（铅笔）里打开「可选支出分类」，就能单独看到可以省的钱', trendTitle:'最近6个月支出', trendHint:'点柱子可跳到该月', avgLbl:'平均', schedLbl:'待扣固定支出', trendAvg:function(n,a){return '前 '+n+' 个月平均 '+a;}, trendCur:function(a){return '本月 '+a;}, totalBudget:'月预算', setBudget:'+ 设置月预算', budgetPh2:'整月总预算（清空即取消）', expectedLbl:'截至今天的合理进度',
+      byLbl:'记录人', tapToEdit:'点击修改', recEditNote:'固定项目：只修改本月的项目和金额', movedTo:function(n){return '已移到「'+n+'」';}, cvLbl:'分类框显示', cvDay:'所选日期', cvMonth:function(m){return m+'全部';}, sharedLbl:'共同', whoLbl:'谁的支出', sharedCat:'共同支出分类（默认：共同）', recordedBy:function(n){return '记录人：'+n;}, acTimes:function(n){return n+'次';}, tabRec:'记账', tabAna:'分析', moreLbl:'更多', syncSetup:'同步设置', stSpent:function(m){return m+'支出';}, stLeft:'预算剩余', stPerDay:'每天可用', stPerDayFast:'每天可用（花得快）', payLbl:'支付方式', pays:{card:'刷卡',cash:'现金',transfer:'转账'}, payNone:'未指定', searchTitle:'搜索', searchAll:'全部', searchPh:'项目、分类、记录人、支付方式（例：外卖）', searchHint:'输入关键词，会列出时间范围内的相关记录', searchNone:'没有找到记录', searchSum:function(n){return n+' 笔';}, searchMore:function(n){return '另有 '+n+' 笔未显示（请输入更具体的关键词）';}, trend6:'6个月', trendYear:function(y){return y+'年';}, yearTitle:function(y){return y+'年每月支出';}, yearTotal:function(y,a){return y+'年支出合计 '+a;}, yearAvg:function(n,a){return '月均 '+a+'（'+n+'个月）';}, incomeTitleY:'全年收入', expenseTitleY:'全年支出', optCat:'可选支出分类（外食、购物等可以省的钱）', optLbl:'可选', needLbl:'必要', optSave:'← 可以省的钱', optHint:'在分类编辑（铅笔）里打开「可选支出分类」，就能单独看到可以省的钱', trendTitle:'最近6个月支出', trendHint:'点柱子可跳到该月', avgLbl:'平均', schedLbl:'待扣固定支出', trendAvg:function(n,a){return '前 '+n+' 个月平均 '+a;}, trendCur:function(a){return '本月 '+a;}, totalBudget:'月预算', setBudget:'+ 设置月预算', budgetPh2:'整月总预算（清空即取消）', expectedLbl:'截至今天的合理进度',
       paceFast:function(a){return '比合理进度多花 '+a;}, paceOk:function(a){return '进度正常（余量 '+a+'）';},
       perDay:function(n,a){return '剩下 '+n+' 天每天不超过 '+a;}, noRoom:'预算已用完',
       spentToDate:function(a){return '截至今天支出 '+a;}, cmpSame:function(n,a){return '上月同期（1–'+n+'日）'+a+' 相比';}, cmpFull:function(a){return '与上月 '+a+' 相比';},
@@ -401,7 +414,7 @@
       tagline:'Every expense, in its place',
       cats:{food:'Food', transport:'Transport', daily:'Household', medical:'Medical', fixed:'Recurring', other:'Other'},
       iconLbl:'Icon', iconTip:'Pick one below or type any emoji', income:'Income', expense:'Spent', incomeTitle:'Income this month', expenseTitle:'Spent this month', balance:'Balance', saveRate:function(n){return 'Saved '+n+'%';}, incomeSrcPh:'Source (salary, fees…)', monthlyFixed:'Monthly', recordOn:function(d){return 'On '+d;}, recIncomeTitle:'Monthly income', incEmpty:'No income recorded this month', meta:function(a,e,i){return 'Daily avg spend '+a+' · '+e+' expenses · '+i+' income';}, shot:'Save image', shotBusy:'Creating image…', shotDone:'Image saved', shotFail:'Could not create the image. Check your internet connection', monthListLbl:'This month', monthListEmpty:'Nothing in this category this month', monthListFlag:'Show the whole month', sideLbl:'Position', sideL:'Left', sideR:'Right', recTitle:'Monthly recurring', recEmpty:'No recurring items yet: rent, phone bill, subscriptions', everyMonth:function(d){return 'Monthly, day '+d;}, recStop:'Stop from this month', skipped:'Skipped this month only; the recurring item stays', recFlag:'Use monthly recurring items', totalsTitle:'Totals by category', grand:'Total', invalidDay:'Enter a day from 1 to 31', dayPh:'Day', recBadge:'Fixed',
-      byLbl:'By', sharedLbl:'Shared', whoLbl:'For whom', sharedCat:'Shared by default', recordedBy:function(n){return 'Recorded by '+n;}, acTimes:function(n){return '×'+n;}, tabRec:'Record', tabAna:'Insights', moreLbl:'More', syncSetup:'Sync settings', stSpent:function(m){return m+' spent';}, stLeft:'Budget left', stPerDay:'Per day', stPerDayFast:'Per day (too fast)', payLbl:'Payment', pays:{card:'Card',cash:'Cash',transfer:'Transfer'}, payNone:'Not set', searchTitle:'Search', searchAll:'All', searchPh:'Item, category, person, payment (e.g. delivery)', searchHint:'Type a word to list matching records in the period', searchNone:'No matching records', searchSum:function(n){return n+' records';}, searchMore:function(n){return n+' more not shown (try a more specific word)';}, trend6:'6 months', trendYear:function(y){return String(y);}, yearTitle:function(y){return 'Monthly spending in '+y;}, yearTotal:function(y,a){return y+' total '+a;}, yearAvg:function(n,a){return 'monthly avg '+a+' ('+n+' months)';}, incomeTitleY:'Income this year', expenseTitleY:'Spent this year', optCat:'Optional spending (eating out, shopping…)', optLbl:'Optional', needLbl:'Essential', optSave:'← could be saved', optHint:'Turn on "Optional spending" in a category (pencil) to see money you could save', trendTitle:'Last 6 months', trendHint:'Click a bar to open that month', avgLbl:'Avg', schedLbl:'Scheduled fixed', trendAvg:function(n,a){return n+'-month avg '+a;}, trendCur:function(a){return 'This month '+a;}, totalBudget:'Monthly budget', setBudget:'+ Set monthly budget', budgetPh2:'Total for the month (empty = off)', expectedLbl:'Where spending should be by today',
+      byLbl:'By', tapToEdit:'Click to edit', recEditNote:'Recurring: changes this month only', movedTo:function(n){return 'Moved to '+n;}, cvLbl:'Category cards', cvDay:'Selected day', cvMonth:function(m){return 'All of '+m;}, sharedLbl:'Shared', whoLbl:'For whom', sharedCat:'Shared by default', recordedBy:function(n){return 'Recorded by '+n;}, acTimes:function(n){return '×'+n;}, tabRec:'Record', tabAna:'Insights', moreLbl:'More', syncSetup:'Sync settings', stSpent:function(m){return m+' spent';}, stLeft:'Budget left', stPerDay:'Per day', stPerDayFast:'Per day (too fast)', payLbl:'Payment', pays:{card:'Card',cash:'Cash',transfer:'Transfer'}, payNone:'Not set', searchTitle:'Search', searchAll:'All', searchPh:'Item, category, person, payment (e.g. delivery)', searchHint:'Type a word to list matching records in the period', searchNone:'No matching records', searchSum:function(n){return n+' records';}, searchMore:function(n){return n+' more not shown (try a more specific word)';}, trend6:'6 months', trendYear:function(y){return String(y);}, yearTitle:function(y){return 'Monthly spending in '+y;}, yearTotal:function(y,a){return y+' total '+a;}, yearAvg:function(n,a){return 'monthly avg '+a+' ('+n+' months)';}, incomeTitleY:'Income this year', expenseTitleY:'Spent this year', optCat:'Optional spending (eating out, shopping…)', optLbl:'Optional', needLbl:'Essential', optSave:'← could be saved', optHint:'Turn on "Optional spending" in a category (pencil) to see money you could save', trendTitle:'Last 6 months', trendHint:'Click a bar to open that month', avgLbl:'Avg', schedLbl:'Scheduled fixed', trendAvg:function(n,a){return n+'-month avg '+a;}, trendCur:function(a){return 'This month '+a;}, totalBudget:'Monthly budget', setBudget:'+ Set monthly budget', budgetPh2:'Total for the month (empty = off)', expectedLbl:'Where spending should be by today',
       paceFast:function(a){return a+' ahead of pace';}, paceOk:function(a){return 'On pace ('+a+' to spare)';},
       perDay:function(n,a){return a+'/day for the '+n+' days left';}, noRoom:'No budget left',
       spentToDate:function(a){return 'Spent so far '+a;}, cmpSame:function(n,a){return 'vs '+a+' last month (days 1–'+n+')';}, cmpFull:function(a){return 'vs '+a+' last month';},
@@ -503,7 +516,8 @@
     y: now.getFullYear(), m: now.getMonth(),
     sel: iso(now),
     editingCat: null, catDraftColor: 0,
-    editingBudget: false, dRec: false, qRec: {}, menuOpen: false,
+    editingBudget: false, dRec: false, qRec: {}, menuOpen: false, editWhere: 'card',
+    cardView: (function(){ try{ return localStorage.getItem('recordable-cardview') === 'month' ? 'month' : 'day'; }catch(e){ return 'day'; } })(),
     tab: (function(){ try{ return localStorage.getItem('recordable-tab') === 'ana' ? 'ana' : 'rec'; }catch(e){ return 'rec'; } })(),
     editingEntry: null,
     drafts: {},
@@ -640,7 +654,7 @@
           '<div class="col">' + renderTrend() + renderSearch() + '</div>' +
         '</div>'
       : '<div class="board">' +
-          '<div class="col col-left">' + leftCats.map(renderCat).join('') + '</div>' +
+          '<div class="col col-left">' + renderCardViewBar() + leftCats.map(renderCat).join('') + '</div>' +
           '<div class="col col-center">' + renderStrip() + renderCalendar() + renderDay() + renderIncome() + '</div>' +
           '<div class="col col-right">' + rightCats.map(renderCat).join('') +
             '<button class="add-cat" data-action="add-cat">'+ICON.plus+' '+esc(L.addCat)+'</button>' +
@@ -718,7 +732,7 @@
         '</div></section>';
     }
     var mTotal = sum(monthEntries().filter(function(e){return e.cat===c.id;}));
-    var ml = !!c.monthList;
+    var ml = !!c.monthList || ui.cardView === 'month';
     var dayList = (ml ? monthEntries() : dayEntries(ui.sel)).filter(function(e){return e.cat===c.id;})
       .sort(function(a,b){ return a.date<b.date?-1:a.date>b.date?1:0; });
     var budHtml = '';
@@ -763,22 +777,35 @@
     return '<div class="cat-day"><div class="cat-day-lbl"><span>🔁 '+esc(L.recTitle)+'</span><span>'+(list.length?fmt(sum(list)):'')+'</span></div>' + rows + '</div>';
   }
 
-  function renderEntry(e, p, showDate){
+  // edit form for one expense: category · item · amount (+ owner, payment, optional). Rendered where it was opened (card or day list)
+  function renderEditRow(e){
     var L = t();
-    if(ui.editingEntry === e.id){
-      return '<li class="edit-row">' +
-        '<input id="ee-i" style="flex:1.3" value="'+esc(e.item)+'" data-enter="save-entry" data-id="'+e.id+'">' +
-        '<input id="ee-m" style="flex:1;text-align:right" inputmode="decimal" value="'+e.amount+'" data-enter="save-entry" data-id="'+e.id+'">' +
-        (e.rec ? '' : '<select id="ee-who" class="ee-pay" aria-label="'+esc(L.whoLbl)+'">'+ownerOptions(ownerOf(e))+'</select>' +
+    var catOpts = data.cats.filter(function(c){ return !c._fresh; }).map(function(c){ return '<option value="'+c.id+'"'+(c.id===e.cat?' selected':'')+'>'+esc(c.emoji+' '+catName(c))+'</option>'; }).join('');
+    return '<li class="edit-row">' +
+      '<div class="er-line">' +
+        (e.rec ? '' : '<select id="ee-cat" class="ee-cat" aria-label="'+esc(L.category)+'">'+catOpts+'</select>') +
+        '<input id="ee-i" class="ee-i" placeholder="'+esc(L.itemPh)+'" value="'+esc(e.item)+'" data-enter="save-entry" data-id="'+e.id+'">' +
+        '<input id="ee-m" class="ee-m" inputmode="decimal" value="'+e.amount+'" data-enter="save-entry" data-id="'+e.id+'">' +
+      '</div>' +
+      '<div class="er-line">' +
+        (e.rec ? '<span class="er-note">'+esc(L.recEditNote)+'</span>' :
+          '<select id="ee-who" class="ee-pay" aria-label="'+esc(L.whoLbl)+'">'+ownerOptions(ownerOf(e))+'</select>' +
           '<select id="ee-pay" class="ee-pay" aria-label="'+esc(L.payLbl)+'">'+payOptions(e.pay||'', '—')+'</select>' +
           '<label class="chk" title="'+esc(L.optCat)+'"><input type="checkbox" id="ee-opt"'+(isOpt(e)?' checked':'')+'> '+esc(L.optLbl)+'</label>') +
-        '<button class="mini pri" data-action="save-entry" data-id="'+e.id+'">'+esc(L.save)+'</button></li>';
-    }
+        '<span class="er-btns"><button class="mini sec" data-action="cancel-entry">'+esc(L.cancel)+'</button>' +
+        '<button class="mini pri" data-action="save-entry" data-id="'+e.id+'">'+esc(L.save)+'</button></span>' +
+      '</div></li>';
+  }
+  function editingHere(e, where){ return ui.editingEntry === e.id && (ui.editWhere || 'card') === where; }
+
+  function renderEntry(e, p, showDate){
+    var L = t();
+    if(editingHere(e, 'card')) return renderEditRow(e);
     var dd = showDate ? fromIso(e.date) : null;
-    return '<li class="entry">' +
+    return '<li class="entry'+(showDate && e.date===ui.sel?' on-sel':'')+'">' +
       (dd ? '<span class="edate">'+(dd.getMonth()+1)+'/'+dd.getDate()+'</span>' : '') +
-      '<button class="it" data-action="edit-entry" data-id="'+e.id+'">'+ownerChip(e)+(isOpt(e)?'<span class="opt-tag">'+esc(t().optLbl)+'</span> ':'')+(e.rec?'<span class="rb">'+esc(L.recBadge)+'</span> ':'')+esc(e.item||'—')+payTag(e.pay)+'</button>' +
-      '<button class="am" data-action="edit-entry" data-id="'+e.id+'">'+fmt(e.amount)+'</button>' +
+      '<button class="it" data-action="edit-entry" data-where="card" data-id="'+e.id+'" title="'+esc(L.tapToEdit)+'">'+ownerChip(e)+(isOpt(e)?'<span class="opt-tag">'+esc(t().optLbl)+'</span> ':'')+(e.rec?'<span class="rb">'+esc(L.recBadge)+'</span> ':'')+esc(e.item||'—')+payTag(e.pay)+'</button>' +
+      '<button class="am" data-action="edit-entry" data-where="card" data-id="'+e.id+'">'+fmt(e.amount)+'</button>' +
       '<button class="x" data-action="del-entry" data-id="'+e.id+'" aria-label="'+esc(L.delEntry)+'">'+ICON.x+'</button></li>';
   }
 
@@ -1082,6 +1109,14 @@
   }
 
   // ---- one-line summary on the [기록] tab: the three numbers that matter while spending ----
+  // ---- category cards: entries of the selected day, or the whole month (per device) ----
+  function renderCardViewBar(){
+    var L = t(), m = ui.cardView === 'month';
+    return '<div class="cv-bar"><span class="cv-lbl">'+esc(L.cvLbl)+'</span><div class="seg" role="group">' +
+      '<button data-action="card-view" data-v="day" class="'+(m?'':'on')+'" aria-pressed="'+(!m)+'">'+esc(L.cvDay)+'</button>' +
+      '<button data-action="card-view" data-v="month" class="'+(m?'on':'')+'" aria-pressed="'+m+'">'+esc(L.cvMonth(L.months[ui.m]))+'</button></div></div>';
+  }
+
   function renderStrip(){
     var L = t(), v = viewInfo(), list = monthEntries(), total = sum(list), b = data.budget || 0;
     var item = function(lbl, val, cls){ return '<span class="st-i'+(cls?' '+cls:'')+'"><span class="st-l">'+esc(lbl)+'</span><b>'+val+'</b></span>'; };
@@ -1169,9 +1204,11 @@
         '<button class="ghost" data-action="del-inc" data-id="'+e.id+'" aria-label="'+esc(L.delEntry)+'">'+ICON.x+'</button></li>';
     }).join('');
     var rows = (list.length||inc.length) ? '<ul class="day-list">' + incRows + list.map(function(e){
+      if(editingHere(e, 'day')) return renderEditRow(e);
       var c = catById(e.cat) || data.cats[0], p = pal(c);
-      return '<li><span class="chip" style="background:'+p.bg+';color:'+p.ink+'">'+esc(c.emoji+' '+catName(c))+'</span>' +
-        '<span class="it">'+ownerChip(e)+(isOpt(e)?'<span class="opt-tag">'+esc(t().optLbl)+'</span> ':'')+(e.rec?'<span class="rb">'+esc(L.recBadge)+'</span> ':'')+esc(e.item||'—')+payTag(e.pay)+'</span><span class="am">'+fmt(e.amount)+'</span>' +
+      return '<li><button class="d-edit" data-action="edit-entry" data-where="day" data-id="'+e.id+'" title="'+esc(L.tapToEdit)+'">' +
+        '<span class="chip" style="background:'+p.bg+';color:'+p.ink+'">'+esc(c.emoji+' '+catName(c))+'</span>' +
+        '<span class="it">'+ownerChip(e)+(isOpt(e)?'<span class="opt-tag">'+esc(t().optLbl)+'</span> ':'')+(e.rec?'<span class="rb">'+esc(L.recBadge)+'</span> ':'')+esc(e.item||'—')+payTag(e.pay)+'</span><span class="am">'+fmt(e.amount)+'</span></button>' +
         '<button class="ghost" data-action="del-entry" data-id="'+e.id+'" aria-label="'+esc(L.delEntry)+'">'+ICON.x+'</button></li>';
     }).join('') + '</ul>' : '<div class="empty" style="color:var(--muted);opacity:1">'+esc(L.dayEmpty)+'</div>';
     var catOpts = data.cats.map(function(c){ return '<option value="'+c.id+'"'+(ui.drafts['d-cat']===c.id?' selected':'')+'>'+esc(c.emoji+' '+catName(c))+'</option>'; }).join('');
@@ -1345,7 +1382,10 @@
         save(); render(); break;
       }
       case 'edit-entry':
-        ui.editingEntry = id; ui.focus = 'ee-m'; render(); break;
+        ui.editingEntry = id; ui.editWhere = el.getAttribute('data-where') || 'card'; ui.focus = 'ee-i'; render(); break;
+      case 'card-view': ui.cardView = el.getAttribute('data-v') === 'month' ? 'month' : 'day'; ui.editingEntry = null;
+        try{ localStorage.setItem('recordable-cardview', ui.cardView); }catch(e){} render(); break;
+      case 'cancel-entry': ui.editingEntry = null; render(); break;
       case 'save-entry': saveEntry(id); break;
       case 'edit-cat': {
         var c = catById(id); ui.editingCat = id; ui.catDraftColor = c ? c.color : 0; ui.catDraftSide = c ? (c.side||'L') : 'L'; ui.focus = 'cf-name'; render(); break;
@@ -1453,6 +1493,12 @@
     var e = null; data.entries.forEach(function(x){ if(x.id===id) e=x; });
     if(!e) return;
     e.item = document.getElementById('ee-i').value.trim(); e.amount = amt;
+    var cs = document.getElementById('ee-cat');
+    if(cs && cs.value && catById(cs.value) && cs.value !== e.cat){
+      // moving to another category: owner / optional choices below are re-read against the new category's defaults
+      e.cat = cs.value;
+      if(ui.editWhere !== 'day') toast(t().movedTo(catName(catById(e.cat))));
+    }
     var oc = document.getElementById('ee-opt');
     if(oc){ var catOpt = !!(catById(e.cat)||{}).opt; if(oc.checked === catOpt) delete e.opt; else e.opt = oc.checked; }
     var ps = document.getElementById('ee-pay'); if(ps){ if(ps.value) e.pay = ps.value; else delete e.pay; }
@@ -1627,6 +1673,14 @@
       if(y>=1900 && y<=2100) goMonth(y, ui.m); else el.value = ui.y;
     } else if(el.id==='month-in'){
       goMonth(ui.y, parseInt(el.value,10));
+    } else if(el.id==='ee-cat'){
+      // category changed in the edit form: "optional" and "whose" follow the new category unless set by hand on this record
+      var ee = null; data.entries.forEach(function(x){ if(x.id===ui.editingEntry) ee = x; });
+      var nc = catById(el.value);
+      if(ee && nc){
+        var oc2 = document.getElementById('ee-opt'); if(oc2 && ee.opt === undefined) oc2.checked = !!nc.opt;
+        var ws2 = document.getElementById('ee-who'); if(ws2 && ee.who === undefined) ws2.innerHTML = ownerOptions(defaultOwner(nc.id, ee.by));
+      }
     } else if(el.id==='d-cat'){
       ui.drafts['d-cat'] = el.value; delete ui.drafts['d-who'];
       var dw = document.getElementById('d-who'); if(dw) dw.innerHTML = ownerOptions(defaultOwner(el.value, me()));
