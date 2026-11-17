@@ -43,7 +43,7 @@
   function SyncError(code, message) { var e = new Error(message || code); e.code = code; return e; }
 
   /* ---------------- 앱 데이터 ↔ 행 변환 ---------------- */
-  var LISTS = [['entries', 'entry'], ['recurring', 'rec'], ['income', 'inc'], ['incomeRec', 'increc']];
+  var LISTS = [['entries', 'entry'], ['recurring', 'rec'], ['income', 'inc'], ['incomeRec', 'increc'], ['blacklist', 'bl']];
   // 한 값짜리 공용 설정: 설정 id → 앱 데이터 필드
   var SETTINGS = { currency: 'currency', budget: 'budget', lastBackup: 'lastBackup' };
 
@@ -79,8 +79,8 @@
   }
 
   function fromRows(base, prev) {
-    var d = { v: prev.v, lang: prev.lang, currency: prev.currency, budget: 0, lastBackup: null, names: {}, cats: [], entries: [], recurring: [], income: [], incomeRec: [] };
-    var listOf = { entry: 'entries', rec: 'recurring', inc: 'income', increc: 'incomeRec' };
+    var d = { v: prev.v, lang: prev.lang, currency: prev.currency, budget: 0, lastBackup: null, names: {}, cats: [], entries: [], recurring: [], income: [], incomeRec: [], blacklist: [] };
+    var listOf = { entry: 'entries', rec: 'recurring', inc: 'income', increc: 'incomeRec', bl: 'blacklist' };
     Object.keys(base).forEach(function (k) {
       var kk = splitKey(k), o = JSON.parse(base[k]);
       if (kk.kind === 'cat') d.cats.push(o);
@@ -90,7 +90,7 @@
     });
     d.cats.sort(function (a, b) { return (a._ord || 0) - (b._ord || 0); });
     d.cats.forEach(function (c) { delete c._ord; });
-    ['entries', 'recurring', 'income', 'incomeRec'].forEach(function (n) {
+    ['entries', 'recurring', 'income', 'incomeRec', 'blacklist'].forEach(function (n) {
       d[n].sort(function (a, b) { return String(a.id) < String(b.id) ? -1 : String(a.id) > String(b.id) ? 1 : 0; });
     });
     (prev.cats || []).forEach(function (c) { if (c && c._fresh) d.cats.push(c); }); // 편집 중인 새 분류 유지
